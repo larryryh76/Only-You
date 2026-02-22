@@ -10,23 +10,38 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const otherUserId = searchParams.get('userId');
-  if (!otherUserId) return NextResponse.json({ message: 'UserId required' }, { status: 400 });
+  const userId1 = searchParams.get('userId1');
+  const userId2 = searchParams.get('userId2');
 
-  const currentUserId = (session.user as any).id;
+  const isAdmin = session.user.role === 'admin';
 
   await dbConnect();
 
   try {
-    const messages = await Message.find({
-      $or: [
-        { senderId: currentUserId, receiverId: otherUserId },
-        { senderId: otherUserId, receiverId: currentUserId },
-      ],
-    }).sort({ createdAt: 1 });
+    let query = {};
+    if (isAdmin && userId1 && userId2) {
+      query = {
+        $or: [
+          { senderId: userId1, receiverId: userId2 },
+          { senderId: userId2, receiverId: userId1 },
+        ],
+      };
+    } else if (otherUserId) {
+      const currentUserId = session.user.id;
+      query = {
+        $or: [
+          { senderId: currentUserId, receiverId: otherUserId },
+          { senderId: otherUserId, receiverId: currentUserId },
+        ],
+      };
+    } else {
+      return NextResponse.json({ message: 'userId or userId1/userId2 required' }, { status: 400 });
+    }
 
+    const messages = await Message.find(query).sort({ createdAt: 1 });
     return NextResponse.json(messages);
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ message: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
   }
 }
 
@@ -36,7 +51,7 @@ export async function POST(req: Request) {
 
   try {
     const { receiverId, content } = await req.json();
-    const senderId = (session.user as any).id;
+    const senderId = session.user.id;
 
     await dbConnect();
 
@@ -47,7 +62,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(message, { status: 201 });
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ message: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
   }
 }

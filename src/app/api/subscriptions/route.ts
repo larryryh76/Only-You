@@ -12,8 +12,18 @@ export async function POST(req: Request) {
     const { creatorId, paymentMethod, paymentProof } = await req.json();
     await dbConnect();
 
+    const existingPending = await Subscription.findOne({
+      userId: session.user.id,
+      creatorId,
+      status: 'pending'
+    });
+
+    if (existingPending) {
+      return NextResponse.json({ message: 'You already have a pending subscription request' }, { status: 400 });
+    }
+
     const subscription = await Subscription.create({
-      userId: (session.user as any).id,
+      userId: session.user.id,
       creatorId,
       paymentMethod,
       paymentProof,
@@ -21,8 +31,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(subscription, { status: 201 });
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ message: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
   }
 }
 
@@ -31,8 +41,8 @@ export async function GET(req: Request) {
   if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
   const { searchParams } = new URL(req.url);
-  const role = (session.user as any).role;
-  const userId = (session.user as any).id;
+  const role = session.user.role;
+  const userId = session.user.id;
 
   await dbConnect();
 
@@ -51,8 +61,8 @@ export async function GET(req: Request) {
       .populate('creatorId', 'name username');
 
     return NextResponse.json(subscriptions);
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ message: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
   }
 }
 
@@ -60,7 +70,7 @@ export async function PATCH(req: Request) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
-  const role = (session.user as any).role;
+  const role = session.user.role;
   if (role !== 'creator' && role !== 'admin') {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
@@ -69,7 +79,7 @@ export async function PATCH(req: Request) {
     const { subscriptionId, status } = await req.json();
     await dbConnect();
 
-    const updateData: any = { status };
+    const updateData: { status: string; startDate?: Date; endDate?: Date } = { status };
     if (status === 'active') {
       updateData.startDate = new Date();
       updateData.endDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
@@ -77,7 +87,7 @@ export async function PATCH(req: Request) {
 
     const subscription = await Subscription.findByIdAndUpdate(subscriptionId, updateData, { new: true });
     return NextResponse.json(subscription);
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ message: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
   }
 }

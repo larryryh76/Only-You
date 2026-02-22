@@ -3,10 +3,20 @@
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
+import Image from 'next/image';
 import { CheckCircle } from 'lucide-react';
 
+interface Creator {
+  _id: string;
+  name: string;
+  username: string;
+  profileImage?: string;
+  bio?: string;
+  displayFollowerCount?: number;
+}
+
 export default function Home() {
-  const [creators, setCreators] = useState([]);
+  const [creators, setCreators] = useState<Creator[]>([]);
 
   useEffect(() => {
     fetch('/api/creators')
@@ -40,7 +50,13 @@ export default function Home() {
                 <div className="p-6 -mt-12">
                   <div className="w-20 h-20 bg-gray-200 border-4 border-white rounded-full overflow-hidden mb-4">
                     {creator.profileImage ? (
-                      <img src={creator.profileImage} alt={creator.name} className="w-full h-full object-cover" />
+                      <Image
+                        src={creator.profileImage}
+                        alt={creator.name}
+                        width={80}
+                        height={80}
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-600 text-2xl font-bold">
                         {creator.name[0]}

@@ -15,10 +15,10 @@
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.575.0",
     "mongoose": "^9.2.1",
-    "next": "16.1.6",
+    "next": "^15.5.12",
     "next-auth": "^4.24.13",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
@@ -28,7 +28,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "15.5.12",
     "mongodb-memory-server": "^11.0.1",
     "tailwindcss": "^4",
     "typescript": "^5"

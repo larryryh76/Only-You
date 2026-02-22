@@ -12,15 +12,33 @@ import {
   XCircle,
   CreditCard,
   PlusSquare,
-  Eye
+  Eye,
+  MessageSquare
 } from 'lucide-react';
+
+interface ISubscription {
+  _id: string;
+  userId: { _id: string; name: string; email: string };
+  creatorId: { _id: string; name: string; username: string };
+  status: 'pending' | 'active' | 'expired';
+  paymentMethod: string;
+  paymentProof: string;
+  createdAt: string;
+}
+
+interface ICreator {
+  _id: string;
+  name: string;
+  username: string;
+  isVerified: boolean;
+}
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
-  const [subscriptions, setSubscriptions] = useState([]);
-  const [creators, setCreators] = useState([]);
+  const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]);
+  const [creators, setCreators] = useState<ICreator[]>([]);
   const [newPostContent, setNewPostContent] = useState('');
   const [paymentDetails, setPaymentDetails] = useState({ cashapp: '', crypto: '' });
   const [showCreateCreator, setShowCreateCreator] = useState(false);
@@ -36,8 +54,8 @@ export default function Dashboard() {
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login');
-    } else if (status === 'authenticated') {
-      setRole((session.user as any).role);
+    } else if (status === 'authenticated' && session?.user) {
+      setRole(session.user.role);
       fetchDashboardData();
     }
   }, [status, session]);
@@ -47,13 +65,13 @@ export default function Dashboard() {
     const data = await res.json();
     setSubscriptions(data);
 
-    if ((session?.user as any).role === 'admin') {
+    if (session?.user?.role === 'admin') {
       const creatorsRes = await fetch('/api/creators');
       const creatorsData = await creatorsRes.json();
       setCreators(creatorsData);
     }
 
-    if ((session?.user as any).role === 'creator') {
+    if (session?.user?.role === 'creator') {
       const meRes = await fetch('/api/creators/me');
       const meData = await meRes.json();
       setPaymentDetails(meData.paymentDetails || { cashapp: '', crypto: '' });
@@ -148,7 +166,7 @@ export default function Dashboard() {
                   <Clock className="text-orange-500" /> Pending Approvals
                 </h2>
                 <div className="space-y-4">
-                  {subscriptions.filter((s: any) => s.status === 'pending').map((sub: any) => (
+                  {subscriptions.filter((s) => s.status === 'pending').map((sub) => (
                     <div key={sub._id} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
                       <div>
                         <p className="font-bold text-gray-900">{sub.userId.name}</p>
@@ -214,7 +232,7 @@ export default function Dashboard() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Active Subscribers</span>
-                    <span className="font-bold text-2xl">{subscriptions.filter((s: any) => s.status === 'active').length}</span>
+                    <span className="font-bold text-2xl">{subscriptions.filter((s) => s.status === 'active').length}</span>
                   </div>
                 </div>
               </section>
@@ -229,7 +247,7 @@ export default function Dashboard() {
                 <CreditCard className="text-blue-600" /> My Subscriptions
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {subscriptions.map((sub: any) => (
+                {subscriptions.map((sub) => (
                   <div key={sub._id} className="p-4 border border-gray-100 rounded-xl bg-gray-50">
                     <div className="flex justify-between items-start mb-4">
                       <div>
@@ -278,7 +296,7 @@ export default function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {subscriptions.map((sub: any) => (
+                    {subscriptions.map((sub) => (
                       <tr key={sub._id} className="border-b border-gray-50">
                         <td className="py-4 text-gray-800">{sub.userId.name}</td>
                         <td className="py-4 text-gray-500">{sub.creatorId.name}</td>
@@ -317,9 +335,17 @@ export default function Dashboard() {
 
              <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold flex items-center gap-2">
-                  <Users className="text-blue-600" /> Manage Creators
-                </h2>
+                <div className="flex gap-4">
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <Users className="text-blue-600" /> Manage Creators
+                  </h2>
+                  <Link
+                    href="/messages"
+                    className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:bg-blue-50 px-3 py-1 rounded-lg transition"
+                  >
+                    <MessageSquare size={16} /> View All Messages
+                  </Link>
+                </div>
                 <button
                   onClick={() => setShowCreateCreator(true)}
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition flex items-center gap-2"
@@ -395,7 +421,7 @@ export default function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {creators.map((creator: any) => (
+                    {creators.map((creator) => (
                       <tr key={creator._id} className="border-b border-gray-50">
                         <td className="py-4 text-gray-800">{creator.name}</td>
                         <td className="py-4 text-gray-500">@{creator.username}</td>

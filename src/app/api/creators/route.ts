@@ -11,20 +11,25 @@ export async function GET() {
     const creators = await User.find({ role: 'creator', isVerified: true })
       .select('name username profileImage bio displayFollowerCount');
     return NextResponse.json(creators);
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ message: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
   }
 }
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
 
-  if (!session || (session.user as any).role !== 'admin') {
+  if (!session || session.user.role !== 'admin') {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   try {
-    const { name, email, password, username, bio, displayFollowerCount } = await req.json();
+    const body = await req.json();
+    const { name, email, password, username, bio, displayFollowerCount } = body;
+
+    if (!name || !email || !password || !username) {
+      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
+    }
 
     await dbConnect();
 
@@ -47,7 +52,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ message: 'Creator created successfully', creatorId: creator._id }, { status: 201 });
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ message: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
   }
 }

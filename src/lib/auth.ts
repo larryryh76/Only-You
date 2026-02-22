@@ -1,8 +1,31 @@
-import { NextAuthOptions } from 'next-auth';
+import { NextAuthOptions, DefaultSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import dbConnect from './mongodb';
 import User from '@/models/User';
+
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string;
+      role: string;
+      username?: string;
+    } & DefaultSession['user']
+  }
+
+  interface User {
+    role: string;
+    username?: string;
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id: string;
+    role: string;
+    username?: string;
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -44,17 +67,17 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
-        token.username = (user as any).username;
+        token.role = user.role;
+        token.username = user.username;
         token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).role = token.role;
-        (session.user as any).username = token.username;
-        (session.user as any).id = token.id;
+        session.user.role = token.role as string;
+        session.user.username = token.username as string;
+        session.user.id = token.id as string;
       }
       return session;
     }

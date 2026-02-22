@@ -6,18 +6,18 @@ import User from '@/models/User';
 
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if (!session || (session.user as any).role !== 'creator') {
+  if (!session || session.user.role !== 'creator') {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   await dbConnect();
-  const creator = await User.findById((session.user as any).id);
+  const creator = await User.findById(session.user.id);
   return NextResponse.json(creator);
 }
 
 export async function PATCH(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session || (session.user as any).role !== 'creator') {
+  if (!session || session.user.role !== 'creator') {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
@@ -26,7 +26,7 @@ export async function PATCH(req: Request) {
     await dbConnect();
 
     const updatedCreator = await User.findByIdAndUpdate(
-      (session.user as any).id,
+      session.user.id,
       {
         bio: data.bio,
         profileImage: data.profileImage,
@@ -36,7 +36,7 @@ export async function PATCH(req: Request) {
     );
 
     return NextResponse.json(updatedCreator);
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ message: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
   }
 }
