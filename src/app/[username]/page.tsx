@@ -6,13 +6,36 @@ import { useSession } from 'next-auth/react';
 import Navbar from '@/components/Navbar';
 import { CheckCircle, Lock, MessageCircle, X } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
+
+interface Post {
+  _id: string;
+  content: string;
+  mediaUrl?: string;
+  isPremium: boolean;
+  createdAt: string;
+  isLocked?: boolean;
+}
+
+interface Creator {
+  _id: string;
+  name: string;
+  username: string;
+  profileImage?: string;
+  bio?: string;
+  displayFollowerCount?: number;
+  paymentDetails?: {
+    cashapp?: string;
+    crypto?: string;
+  };
+}
 
 export default function CreatorProfile() {
   const { username } = useParams();
   const { data: session } = useSession();
   const router = useRouter();
-  const [creator, setCreator] = useState<any>(null);
-  const [posts, setPosts] = useState([]);
+  const [creator, setCreator] = useState<Creator | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [showSubModal, setShowSubModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('cashapp');
@@ -36,7 +59,10 @@ export default function CreatorProfile() {
         if (session) {
           const subRes = await fetch('/api/subscriptions');
           const subData = await subRes.json();
-          const activeSub = subData.find((s: any) => (s.creatorId._id === creatorData._id || s.creatorId === creatorData._id) && s.status !== 'expired');
+          const activeSub = subData.find((s: { creatorId: { _id: string } | string; status: string }) => {
+            const cid = typeof s.creatorId === 'string' ? s.creatorId : s.creatorId._id;
+            return cid === creatorData._id && s.status !== 'expired';
+          });
           if (activeSub) setSubStatus(activeSub.status);
         }
       } catch (error) {
@@ -82,7 +108,13 @@ export default function CreatorProfile() {
           <div className="flex justify-between items-end mb-6">
             <div className="w-32 h-32 bg-gray-300 border-4 border-white rounded-full overflow-hidden">
               {creator.profileImage ? (
-                <img src={creator.profileImage} alt={creator.name} className="w-full h-full object-cover" />
+                <Image
+                  src={creator.profileImage}
+                  alt={creator.name}
+                  width={128}
+                  height={128}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-400 text-white text-4xl font-bold">
                   {creator.name[0]}
@@ -196,12 +228,18 @@ export default function CreatorProfile() {
 
         <div className="mt-8 space-y-6">
           <h2 className="text-2xl font-bold text-gray-900">Posts</h2>
-          {posts.map((post: any) => (
+          {posts.map((post: Post) => (
             <div key={post._id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
                    {creator.profileImage ? (
-                     <img src={creator.profileImage} className="w-full h-full object-cover" />
+                     <Image
+                       src={creator.profileImage}
+                       alt={creator.name}
+                       width={48}
+                       height={48}
+                       className="w-full h-full object-cover"
+                     />
                    ) : (
                      <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-600 font-bold">{creator.name[0]}</div>
                    )}
@@ -228,7 +266,13 @@ export default function CreatorProfile() {
                   <p className="text-gray-800 mb-6 leading-relaxed text-lg">{post.content}</p>
                   {post.mediaUrl && (
                     <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
-                      <img src={post.mediaUrl} className="w-full object-cover max-h-[600px]" alt="Post content" />
+                      <Image
+                        src={post.mediaUrl}
+                        alt="Post content"
+                        width={800}
+                        height={600}
+                        className="w-full object-cover max-h-[600px]"
+                      />
                     </div>
                   )}
                 </>

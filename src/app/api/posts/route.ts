@@ -18,11 +18,11 @@ export async function GET(req: Request) {
     let isSubscribed = false;
     if (session) {
       const subscription = await Subscription.findOne({
-        userId: (session.user as any).id,
+        userId: session.user.id,
         creatorId,
         status: 'active',
       });
-      isSubscribed = !!subscription || (session.user as any).id === creatorId || (session.user as any).role === 'admin';
+      isSubscribed = !!subscription || session.user.id === creatorId || session.user.role === 'admin';
     }
 
     const posts = await Post.find({ creatorId }).sort({ createdAt: -1 });
@@ -40,20 +40,25 @@ export async function GET(req: Request) {
     });
 
     return NextResponse.json(filteredPosts);
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ message: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
   }
 }
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session || (session.user as any).role !== 'creator') {
+  if (!session || session.user.role !== 'creator') {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   try {
     const { content, mediaUrl, isPremium } = await req.json();
-    const creatorId = (session.user as any).id;
+
+    if (!content) {
+      return NextResponse.json({ message: 'Content is required' }, { status: 400 });
+    }
+
+    const creatorId = session.user.id;
 
     await dbConnect();
 
@@ -65,7 +70,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(post, { status: 201 });
-  } catch (error: any) {
-    return NextResponse.json({ message: error.message }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json({ message: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
   }
 }
