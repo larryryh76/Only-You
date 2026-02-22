@@ -10,7 +10,7 @@ export default function Navbar() {
   return (
     <nav className="bg-white border-b border-gray-200 py-4 px-6 flex justify-between items-center sticky top-0 z-50">
       <Link href="/" className="text-2xl font-bold text-blue-600">
-        Only-You
+        OnlyFans
       </Link>
       <div className="flex items-center gap-6">
         {session ? (
