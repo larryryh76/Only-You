@@ -51,6 +51,11 @@ async function dbConnect() {
     cached.promise = null;
     const message = e instanceof Error ? e.message : 'Unknown error';
     console.error('MongoDB connection error:', message);
+
+    if (message.includes('authentication failed') || message.includes('bad auth')) {
+      throw new Error(`Database connection failed: Authentication failed. If using MongoDB Atlas, ensure your password is URL-encoded (e.g., replace @ with %40).`);
+    }
+
     throw new Error(`Database connection failed: ${message}`);
   }
 
