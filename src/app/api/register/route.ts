@@ -32,7 +32,9 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ message: 'User registered successfully', userId: user._id }, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ message: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error('Registration error:', message);
+    return NextResponse.json({ message }, { status: 500 });
   }
 }
