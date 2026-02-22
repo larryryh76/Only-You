@@ -36,31 +36,37 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('Please enter an email and password');
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            throw new Error('Please enter an email and password');
+          }
+
+          await dbConnect();
+
+          const user = await User.findOne({ email: credentials.email });
+
+          if (!user) {
+            throw new Error('No user found with this email');
+          }
+
+          const isValid = await bcrypt.compare(credentials.password, user.password);
+
+          if (!isValid) {
+            throw new Error('Invalid password');
+          }
+
+          return {
+            id: user._id.toString(),
+            email: user.email,
+            name: user.name,
+            role: user.role,
+            username: user.username,
+          };
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'Authentication failed';
+          console.error('NextAuth authorize error:', message);
+          throw new Error(message);
         }
-
-        await dbConnect();
-
-        const user = await User.findOne({ email: credentials.email });
-
-        if (!user) {
-          throw new Error('No user found with this email');
-        }
-
-        const isValid = await bcrypt.compare(credentials.password, user.password);
-
-        if (!isValid) {
-          throw new Error('Invalid password');
-        }
-
-        return {
-          id: user._id.toString(),
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          username: user.username,
-        };
       }
     })
   ],

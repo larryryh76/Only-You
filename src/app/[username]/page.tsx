@@ -259,7 +259,7 @@ export default function CreatorProfile() {
                     <Lock size={32} className="text-gray-400" />
                   </div>
                   <p className="font-bold text-gray-900 text-lg mb-1">Unlock this post</p>
-                  <p className="text-sm">Subscribe to see {creator.name}'s exclusive content</p>
+                  <p className="text-sm">Subscribe to see {creator.name}&apos;s exclusive content</p>
                 </div>
               ) : (
                 <>

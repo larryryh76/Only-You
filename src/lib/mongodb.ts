@@ -11,13 +11,26 @@ if (!MONGODB_URI) {
  * in development. This prevents connections from growing exponentially
  * during API Route usage.
  */
-let cached = (global as any).mongoose;
+interface MongooseCache {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+}
+
+declare global {
+  var mongoose: MongooseCache | undefined;
+}
+
+let cached = global.mongoose;
 
 if (!cached) {
-  cached = (global as any).mongoose = { conn: null, promise: null };
+  cached = global.mongoose = { conn: null, promise: null };
 }
 
 async function dbConnect() {
+  if (!cached) {
+    cached = global.mongoose = { conn: null, promise: null };
+  }
+
   if (cached.conn) {
     return cached.conn;
   }
@@ -34,9 +47,11 @@ async function dbConnect() {
 
   try {
     cached.conn = await cached.promise;
-  } catch (e) {
+  } catch (e: unknown) {
     cached.promise = null;
-    throw e;
+    const message = e instanceof Error ? e.message : 'Unknown error';
+    console.error('MongoDB connection error:', message);
+    throw new Error(`Database connection failed: ${message}`);
   }
 
   return cached.conn;

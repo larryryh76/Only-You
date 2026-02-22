@@ -40,7 +40,7 @@ export default function Home() {
         <section>
           <h2 className="text-2xl font-bold text-gray-800 mb-8">Featured Creators</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {creators.map((creator: any) => (
+            {creators.map((creator) => (
               <Link
                 key={creator._id}
                 href={`/${creator.username}`}

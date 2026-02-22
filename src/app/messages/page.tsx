@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense, useCallback } from 'react';
 import Navbar from '@/components/Navbar';
 import { Send, MessageSquare, User, CreditCard } from 'lucide-react';
 import Image from 'next/image';
@@ -13,6 +13,11 @@ interface IMessage {
   receiverId: string;
   content: string;
   createdAt: string;
+}
+
+interface IPaymentDetails {
+  cashapp?: string;
+  crypto?: string;
 }
 
 interface IConversation {
@@ -43,36 +48,9 @@ function MessagesContent() {
   const [conversations, setConversations] = useState<IConversation[]>([]);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [creatorPaymentDetails, setCreatorPaymentDetails] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [creatorPaymentDetails, setCreatorPaymentDetails] = useState<IPaymentDetails | null>(null);
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    } else if (status === 'authenticated') {
-      fetchConversations();
-      if (targetUserId || (adminUserId1 && adminUserId2)) {
-        fetchMessages();
-        const interval = setInterval(fetchMessages, 5000);
-        return () => clearInterval(interval);
-      }
-      if (session?.user?.role === 'creator') {
-        fetchCreatorDetails();
-      }
-    }
-  }, [status, targetUserId, adminUserId1, adminUserId2]);
-
-  const fetchCreatorDetails = async () => {
-    try {
-      const res = await fetch('/api/creators/me');
-      const data = await res.json();
-      setCreatorPaymentDetails(data.paymentDetails);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const fetchConversations = async () => {
+  const fetchConversations = useCallback(async () => {
     try {
       const res = await fetch('/api/messages/conversations');
       const data = await res.json();
@@ -80,9 +58,9 @@ function MessagesContent() {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, []);
 
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     try {
       let url = '/api/messages';
       if (adminUserId1 && adminUserId2) {
@@ -95,10 +73,37 @@ function MessagesContent() {
       setMessages(data);
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [adminUserId1, adminUserId2, targetUserId]);
+
+  const fetchCreatorDetails = useCallback(async () => {
+    try {
+      const res = await fetch('/api/creators/me');
+      const data = await res.json();
+      setCreatorPaymentDetails(data.paymentDetails);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    } else if (status === 'authenticated') {
+      fetchConversations();
+      let interval: NodeJS.Timeout;
+      if (targetUserId || (adminUserId1 && adminUserId2)) {
+        fetchMessages();
+        interval = setInterval(fetchMessages, 5000);
+      }
+      if (session?.user?.role === 'creator') {
+        fetchCreatorDetails();
+      }
+      return () => {
+        if (interval) clearInterval(interval);
+      };
+    }
+  }, [status, targetUserId, adminUserId1, adminUserId2, router, session?.user?.role, fetchConversations, fetchMessages, fetchCreatorDetails]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();

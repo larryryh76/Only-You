@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import {
@@ -51,16 +51,7 @@ export default function Dashboard() {
     displayFollowerCount: 0,
   });
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    } else if (status === 'authenticated' && session?.user) {
-      setRole(session.user.role);
-      fetchDashboardData();
-    }
-  }, [status, session]);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     const res = await fetch('/api/subscriptions');
     const data = await res.json();
     setSubscriptions(data);
@@ -76,7 +67,16 @@ export default function Dashboard() {
       const meData = await meRes.json();
       setPaymentDetails(meData.paymentDetails || { cashapp: '', crypto: '' });
     }
-  };
+  }, [session]);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    } else if (status === 'authenticated' && session?.user) {
+      setRole(session.user.role);
+      fetchDashboardData();
+    }
+  }, [status, session, router, fetchDashboardData]);
 
   const handleApproveSubscription = async (subId: string, approved: boolean) => {
     await fetch('/api/subscriptions', {
@@ -188,7 +188,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                   ))}
-                  {subscriptions.filter((s: any) => s.status === 'pending').length === 0 && (
+                  {subscriptions.filter((s) => s.status === 'pending').length === 0 && (
                     <p className="text-gray-500 italic">No pending subscriptions.</p>
                   )}
                 </div>
