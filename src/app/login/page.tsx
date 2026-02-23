@@ -5,6 +5,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
+import { X } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -28,48 +29,64 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-of-light flex flex-col">
       <Navbar />
-      <div className="flex items-center justify-center py-20 px-6">
-        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 w-full max-w-md">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6 text-center">Login</h1>
-          {error && <p className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-center">{error}</p>}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+      <div className="flex-1 flex items-center justify-center py-20 px-6">
+        <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-of-light w-full max-w-md relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-2 bg-primary"></div>
+
+          <div className="text-center mb-10">
+            <h1 className="text-4xl font-black text-of-dark tracking-tight uppercase mb-2">Welcome Back</h1>
+            <p className="text-of-gray font-bold text-sm tracking-widest uppercase">Sign in to your account</p>
+          </div>
+
+          {error && (
+            <div className="bg-red-50 border-2 border-red-100 text-red-600 p-4 rounded-2xl mb-8 text-center font-bold text-sm flex items-center justify-center gap-2">
+              <X size={18} /> {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Email Address</label>
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full border-2 border-of-light rounded-2xl px-6 py-4 outline-none focus:border-primary bg-of-light/30 font-bold transition-all"
+                placeholder="jane@example.com"
                 required
               />
             </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div className="space-y-2">
+              <label htmlFor="password" className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Password</label>
               <input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full border-2 border-of-light rounded-2xl px-6 py-4 outline-none focus:border-primary bg-of-light/30 font-bold transition-all"
+                placeholder="••••••••"
                 required
               />
             </div>
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition"
+              className="w-full bg-primary text-white py-5 rounded-3xl font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-xl shadow-primary/30 mt-4"
             >
-              Login
+              Sign In
             </button>
           </form>
-          <p className="mt-6 text-center text-gray-600">
-            Don&apos;t have an account?{' '}
-            <Link href="/register" className="text-blue-600 font-medium">
-              Sign up
-            </Link>
-          </p>
+
+          <div className="mt-10 pt-8 border-t border-of-light text-center">
+            <p className="text-of-gray font-bold text-sm">
+              New to OnlyYou?{' '}
+              <Link href="/register" className="text-primary hover:underline">
+                Create an account
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
