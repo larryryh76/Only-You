@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { CheckCircle } from 'lucide-react';
-import { formatCompactNumber } from '@/lib/formatters';
 
 interface Creator {
   _id: string;
@@ -35,80 +34,85 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen">
-      <main className="max-w-6xl mx-auto py-12 px-6">
-        <header className="text-center mb-16 py-10">
-          <h1 className="text-6xl font-black text-of-dark mb-6 tracking-tighter">
-            Unlock your <span className="text-primary italic">Exclusive</span> World
-          </h1>
-          <p className="text-xl text-of-gray max-w-2xl mx-auto font-medium">
-            The platform where creators and fans connect on a deeper level.
-          </p>
-          <div className="mt-10">
-            <Link
-              href="/register"
-              className="bg-primary text-white px-10 py-4 rounded-full font-black text-lg uppercase tracking-widest hover:bg-primary-hover transition shadow-xl shadow-primary/20"
-            >
-              Get Started Now
-            </Link>
-          </div>
-        </header>
+    <div className="min-h-screen bg-of-light flex flex-col items-center justify-center px-6 py-12 md:py-24">
+      <div className="w-full max-w-4xl bg-white rounded-[3rem] shadow-2xl border border-of-light overflow-hidden flex flex-col md:flex-row">
+        {/* Left Side: Visual/Branding */}
+        <div className="w-full md:w-1/2 bg-primary p-12 flex flex-col justify-center items-center text-white text-center">
+           <div className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mb-8 shadow-inner">
+              <span className="text-6xl font-black tracking-tighter">O</span>
+           </div>
+           <h1 className="text-5xl font-black mb-6 tracking-tighter leading-none uppercase">
+             Only<br />You
+           </h1>
+           <p className="text-lg font-medium opacity-90 leading-relaxed max-w-xs">
+             Join the world&apos;s premier platform for exclusive content.
+           </p>
 
-        <section>
-          <div className="flex justify-between items-end mb-10">
-            <h2 className="text-3xl font-black text-of-dark tracking-tight">Featured Creators</h2>
-            <Link href="/register" className="text-primary font-bold hover:underline">See all →</Link>
-          </div>
+           <div className="mt-12 w-full space-y-4">
+              <div className="bg-white/10 p-4 rounded-2xl flex items-center gap-4 text-left backdrop-blur-sm border border-white/10">
+                 <CheckCircle size={24} className="text-white shrink-0" />
+                 <p className="text-sm font-bold">Secure Manual Payments</p>
+              </div>
+              <div className="bg-white/10 p-4 rounded-2xl flex items-center gap-4 text-left backdrop-blur-sm border border-white/10">
+                 <CheckCircle size={24} className="text-white shrink-0" />
+                 <p className="text-sm font-bold">Direct Message Creators</p>
+              </div>
+           </div>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {creators.map((creator) => (
+        {/* Right Side: Auth Options */}
+        <div className="w-full md:w-1/2 p-12 flex flex-col justify-center bg-white">
+           <div className="mb-10 text-center md:text-left">
+              <h2 className="text-3xl font-black text-of-dark mb-2 tracking-tight">Get Started</h2>
+              <p className="text-of-gray font-medium">Log in or create a new account to continue.</p>
+           </div>
+
+           <div className="space-y-4">
               <Link
-                key={creator._id}
-                href={`/${creator.username}`}
-                className="group bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                href="/login"
+                className="w-full flex items-center justify-center gap-3 bg-primary text-white py-5 rounded-3xl font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-xl shadow-primary/20"
               >
-                <div className="h-40 bg-gradient-to-br from-primary/20 to-primary/40 relative">
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
-                </div>
-                <div className="p-8 -mt-16 relative">
-                  <div className="w-24 h-24 bg-gray-200 border-4 border-white rounded-full overflow-hidden mb-4 shadow-lg">
-                    {creator.profileImage ? (
-                      <Image
-                        src={creator.profileImage}
-                        alt={creator.name}
-                        width={96}
-                        height={96}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-of-gray text-white text-3xl font-black">
-                        {creator.name[0]}
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <h3 className="text-2xl font-black text-of-dark">{creator.name}</h3>
-                    <CheckCircle className="text-primary fill-current" size={20} />
-                  </div>
-                  <p className="text-of-gray font-bold mb-6 italic">@{creator.username}</p>
-                  <p className="text-of-dark/70 line-clamp-2 mb-6 text-sm leading-relaxed">
-                    {creator.bio || 'Experience exclusive content and direct interactions with me on OnlyYou.'}
-                  </p>
-                  <div className="flex justify-between items-center border-t border-of-light pt-6">
-                    <div className="flex flex-col">
-                      <span className="font-black text-of-dark text-lg">{formatCompactNumber(creator.displayFollowerCount || 0)}</span>
-                      <span className="text-[10px] uppercase tracking-widest text-of-gray font-bold">Followers</span>
-                    </div>
-                    <span className="bg-of-light text-primary px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider group-hover:bg-primary group-hover:text-white transition-colors">
-                      View Profile
-                    </span>
-                  </div>
-                </div>
+                Sign In to OnlyYou
               </Link>
-            ))}
-          </div>
-        </section>
-      </main>
+              <Link
+                href="/register"
+                className="w-full flex items-center justify-center gap-3 bg-white text-primary border-2 border-primary py-5 rounded-3xl font-black uppercase text-xs tracking-widest hover:bg-of-light transition"
+              >
+                Create Account
+              </Link>
+           </div>
+
+           <div className="mt-12 space-y-8">
+              <div className="flex items-center gap-4">
+                 <div className="h-[1px] flex-1 bg-of-light"></div>
+                 <span className="text-[10px] font-black text-of-gray uppercase tracking-widest">Featured Creators</span>
+                 <div className="h-[1px] flex-1 bg-of-light"></div>
+              </div>
+
+              <div className="flex justify-center -space-x-4">
+                 {creators.slice(0, 5).map((creator) => (
+                    <div key={creator._id} className="w-12 h-12 rounded-full border-4 border-white bg-of-light overflow-hidden shadow-md">
+                       {creator.profileImage ? (
+                         <Image src={creator.profileImage} alt="" width={48} height={48} className="object-cover h-full w-full" />
+                       ) : (
+                         <div className="w-full h-full flex items-center justify-center bg-primary text-white font-black text-xs">{creator.name[0]}</div>
+                       )}
+                    </div>
+                 ))}
+              </div>
+              <p className="text-center text-xs text-of-gray font-medium">
+                Join <span className="text-of-dark font-black">1.5M+</span> fans supporting their favorite creators.
+              </p>
+           </div>
+        </div>
+      </div>
+
+      {/* Mobile-Friendly footer */}
+      <footer className="mt-8 text-of-gray text-[10px] font-black uppercase tracking-widest flex gap-6">
+         <Link href="#" className="hover:text-primary transition">Terms</Link>
+         <Link href="#" className="hover:text-primary transition">Privacy</Link>
+         <Link href="#" className="hover:text-primary transition">Help</Link>
+      </footer>
     </div>
   );
 }
