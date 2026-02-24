@@ -98,127 +98,130 @@ export default function CreatorProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-of-light">
       <Navbar />
       <div className="max-w-4xl mx-auto py-8 px-6">
         {/* Cover Image Placeholder */}
-        <div className="h-48 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-t-2xl"></div>
+        <div className="h-56 bg-gradient-to-br from-primary to-primary-hover rounded-t-3xl shadow-inner"></div>
 
-        <div className="bg-white p-8 rounded-b-2xl shadow-sm border border-gray-100 -mt-10 relative">
-          <div className="flex justify-between items-end mb-6">
-            <div className="w-32 h-32 bg-gray-300 border-4 border-white rounded-full overflow-hidden">
+        <div className="bg-white p-8 rounded-b-3xl shadow-xl border border-gray-100 -mt-12 relative z-10">
+          <div className="flex justify-between items-end mb-8">
+            <div className="w-36 h-36 bg-gray-100 border-8 border-white rounded-full overflow-hidden shadow-2xl transform transition-transform hover:scale-105">
               {creator.profileImage ? (
                 <Image
                   src={creator.profileImage}
                   alt={creator.name}
-                  width={128}
-                  height={128}
+                  width={144}
+                  height={144}
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-400 text-white text-4xl font-bold">
+                <div className="w-full h-full flex items-center justify-center bg-primary text-white text-5xl font-black">
                   {creator.name[0]}
                 </div>
               )}
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-4 mb-4">
               <Link
                 href={`/messages?userId=${creator._id}`}
-                className="p-3 rounded-full border border-gray-200 hover:bg-gray-50 text-gray-600 transition shadow-sm"
+                className="p-3.5 rounded-full border border-of-light hover:bg-of-light text-of-gray hover:text-primary transition shadow-md"
               >
-                <MessageCircle size={24} />
+                <MessageCircle size={26} />
               </Link>
 
               {subStatus === 'active' ? (
-                <button disabled className="bg-green-600 text-white px-8 py-3 rounded-full font-bold opacity-90 cursor-default">
+                <button disabled className="bg-green-500 text-white px-10 py-3.5 rounded-full font-black uppercase text-xs tracking-widest opacity-90 cursor-default shadow-lg shadow-green-100">
                   Subscribed
                 </button>
               ) : subStatus === 'pending' ? (
-                <button disabled className="bg-orange-500 text-white px-8 py-3 rounded-full font-bold opacity-90 cursor-default">
+                <button disabled className="bg-orange-400 text-white px-10 py-3.5 rounded-full font-black uppercase text-xs tracking-widest opacity-90 cursor-default shadow-lg shadow-orange-100">
                   Pending Approval
                 </button>
               ) : (
                 <button
                   onClick={() => session ? setShowSubModal(true) : router.push('/login')}
-                  className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200"
+                  className="bg-primary text-white px-10 py-3.5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-xl shadow-primary/30"
                 >
-                  Subscribe to View
+                  Subscribe
                 </button>
               )}
             </div>
           </div>
 
-          <div className="flex items-center gap-1 mb-1">
-            <h1 className="text-3xl font-bold text-gray-900">{creator.name}</h1>
-            <CheckCircle className="text-blue-500 fill-current" size={24} />
+          <div className="flex items-center gap-2 mb-1">
+            <h1 className="text-4xl font-black text-of-dark tracking-tight">{creator.name}</h1>
+            <CheckCircle className="text-primary fill-current" size={28} />
           </div>
-          <p className="text-gray-500 mb-4">@{creator.username}</p>
-          <p className="text-gray-700 max-w-2xl mb-6 leading-relaxed">{creator.bio || 'No bio available yet.'}</p>
+          <p className="text-of-gray font-black mb-6 italic">@{creator.username}</p>
+          <p className="text-of-dark/80 max-w-2xl mb-8 leading-relaxed font-medium">
+            {creator.bio || 'Welcome to my exclusive space. Subscribe to unlock all my posts and message me directly!'}
+          </p>
 
-          <div className="flex gap-8 border-t border-gray-100 pt-6">
+          <div className="flex gap-12 border-t border-of-light pt-8">
             <div className="text-center">
-              <p className="font-bold text-gray-900 text-xl">{posts.length}</p>
-              <p className="text-gray-500 text-xs uppercase tracking-wider">Posts</p>
+              <p className="font-black text-of-dark text-2xl">{posts.length}</p>
+              <p className="text-[10px] uppercase tracking-widest text-of-gray font-bold mt-1">Posts</p>
             </div>
             <div className="text-center">
-              <p className="font-bold text-gray-900 text-xl">{creator.displayFollowerCount || 0}</p>
-              <p className="text-gray-500 text-xs uppercase tracking-wider">Followers</p>
+              <p className="font-black text-of-dark text-2xl">{creator.displayFollowerCount || 0}</p>
+              <p className="text-[10px] uppercase tracking-widest text-of-gray font-bold mt-1">Followers</p>
             </div>
           </div>
         </div>
 
         {/* Subscription Modal */}
         {showSubModal && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-6">
-            <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+          <div className="fixed inset-0 bg-of-dark/80 backdrop-blur-md flex items-center justify-center z-[100] p-6">
+            <div className="bg-white rounded-[2.5rem] p-10 max-w-md w-full shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-2 bg-primary"></div>
               <button
                 onClick={() => setShowSubModal(false)}
-                className="absolute right-6 top-6 text-gray-400 hover:text-gray-600"
+                className="absolute right-6 top-6 text-of-gray hover:text-of-dark transition"
               >
-                <X size={24} />
+                <X size={28} />
               </button>
 
-              <h2 className="text-2xl font-extrabold mb-2">Subscribe to {creator.name}</h2>
-              <p className="text-gray-600 mb-8 text-sm">Follow instructions below to unlock exclusive content.</p>
+              <h2 className="text-3xl font-black text-of-dark mb-2 tracking-tight">Support {creator.name}</h2>
+              <p className="text-of-gray mb-10 font-medium">Choose your payment method to get instant access.</p>
 
-              <div className="space-y-4 mb-8">
+              <div className="space-y-4 mb-10">
                 <div
                   onClick={() => setPaymentMethod('cashapp')}
-                  className={`p-4 rounded-2xl border-2 cursor-pointer transition ${paymentMethod === 'cashapp' ? 'border-blue-600 bg-blue-50' : 'border-gray-100 hover:border-gray-200'}`}
+                  className={`p-6 rounded-3xl border-2 transition-all duration-200 cursor-pointer ${paymentMethod === 'cashapp' ? 'border-primary bg-primary/5 shadow-md' : 'border-of-light hover:border-of-gray/30'}`}
                 >
-                  <div className="flex justify-between items-center mb-1">
-                    <p className="font-bold text-gray-900">Cash App</p>
-                    {paymentMethod === 'cashapp' && <CheckCircle size={18} className="text-blue-600" />}
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="font-black text-of-dark text-lg tracking-tight">Cash App</p>
+                    {paymentMethod === 'cashapp' && <CheckCircle size={20} className="text-primary fill-current text-white" />}
                   </div>
-                  <p className="text-sm text-blue-600 font-mono font-bold">{creator.paymentDetails?.cashapp || '$NotSet'}</p>
+                  <p className="text-lg text-primary font-black font-mono bg-white inline-block px-3 py-1 rounded-xl border border-primary/10">{creator.paymentDetails?.cashapp || '$NotSet'}</p>
                 </div>
 
                 <div
                   onClick={() => setPaymentMethod('crypto')}
-                  className={`p-4 rounded-2xl border-2 cursor-pointer transition ${paymentMethod === 'crypto' ? 'border-blue-600 bg-blue-50' : 'border-gray-100 hover:border-gray-200'}`}
+                  className={`p-6 rounded-3xl border-2 transition-all duration-200 cursor-pointer ${paymentMethod === 'crypto' ? 'border-primary bg-primary/5 shadow-md' : 'border-of-light hover:border-of-gray/30'}`}
                 >
-                  <div className="flex justify-between items-center mb-1">
-                    <p className="font-bold text-gray-900">Crypto (BTC/ETH)</p>
-                    {paymentMethod === 'crypto' && <CheckCircle size={18} className="text-blue-600" />}
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="font-black text-of-dark text-lg tracking-tight">Crypto (BTC/ETH)</p>
+                    {paymentMethod === 'crypto' && <CheckCircle size={20} className="text-primary fill-current text-white" />}
                   </div>
-                  <p className="text-xs text-blue-600 font-mono break-all">{creator.paymentDetails?.crypto || 'Address not set'}</p>
+                  <p className="text-xs text-primary font-black font-mono break-all bg-white p-3 rounded-xl border border-primary/10 leading-tight">{creator.paymentDetails?.crypto || 'Address not set'}</p>
                 </div>
               </div>
 
-              <div className="mb-8">
-                <label className="block text-sm font-bold text-gray-700 mb-2">Payment Proof / Transaction ID</label>
+              <div className="mb-10">
+                <label className="block text-xs uppercase tracking-widest font-black text-of-gray mb-3 px-1">Payment Proof / Transaction ID</label>
                 <input
                   type="text"
                   value={paymentProof}
                   onChange={(e) => setPaymentProof(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
-                  placeholder="Paste transaction ID or note here"
+                  className="w-full border-2 border-of-light rounded-2xl px-6 py-4 outline-none focus:border-primary bg-of-light font-bold transition-colors"
+                  placeholder="e.g. #ABC-123-XYZ"
                 />
               </div>
 
               <button
                 onClick={handleSubscribe}
-                className="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold text-lg hover:bg-blue-700 transition shadow-lg shadow-blue-200"
+                className="w-full py-5 bg-primary text-white rounded-3xl font-black text-lg uppercase tracking-widest hover:bg-primary-hover transition shadow-xl shadow-primary/30"
               >
                 Submit for Approval
               </button>
@@ -226,52 +229,57 @@ export default function CreatorProfile() {
           </div>
         )}
 
-        <div className="mt-8 space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900">Posts</h2>
+        <div className="mt-12 space-y-10">
+          <div className="flex items-center gap-4">
+            <h2 className="text-3xl font-black text-of-dark tracking-tight">Recent Posts</h2>
+            <div className="h-0.5 flex-1 bg-of-light"></div>
+          </div>
+
           {posts.map((post: Post) => (
-            <div key={post._id} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
+            <div key={post._id} className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-of-light transition-shadow hover:shadow-md">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-14 h-14 bg-of-light rounded-full overflow-hidden shadow-inner">
                    {creator.profileImage ? (
                      <Image
                        src={creator.profileImage}
                        alt={creator.name}
-                       width={48}
-                       height={48}
+                       width={56}
+                       height={56}
                        className="w-full h-full object-cover"
                      />
                    ) : (
-                     <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-600 font-bold">{creator.name[0]}</div>
+                     <div className="w-full h-full flex items-center justify-center bg-primary text-white font-black text-xl">{creator.name[0]}</div>
                    )}
                 </div>
                 <div>
-                  <div className="flex items-center gap-1">
-                    <p className="font-bold text-gray-900">{creator.name}</p>
-                    <CheckCircle className="text-blue-500 fill-current" size={14} />
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-black text-of-dark text-lg tracking-tight">{creator.name}</p>
+                    <CheckCircle className="text-primary fill-current" size={16} />
                   </div>
-                  <p className="text-gray-500 text-xs">{new Date(post.createdAt).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                  <p className="text-of-gray text-[10px] uppercase font-bold tracking-widest">{new Date(post.createdAt).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}</p>
                 </div>
               </div>
 
               {post.isLocked ? (
-                <div className="bg-gray-50 rounded-2xl py-20 flex flex-col items-center justify-center text-gray-500 border-2 border-dashed border-gray-200">
-                  <div className="bg-gray-200 p-4 rounded-full mb-4">
-                    <Lock size={32} className="text-gray-400" />
+                <div className="bg-of-light rounded-[2rem] py-28 flex flex-col items-center justify-center text-of-gray border-4 border-dashed border-white shadow-inner overflow-hidden relative group">
+                  <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="bg-white p-6 rounded-full mb-6 shadow-lg z-10">
+                    <Lock size={40} className="text-primary" />
                   </div>
-                  <p className="font-bold text-gray-900 text-lg mb-1">Unlock this post</p>
-                  <p className="text-sm">Subscribe to see {creator.name}&apos;s exclusive content</p>
+                  <p className="font-black text-of-dark text-2xl mb-2 tracking-tight z-10">Exclusive Post</p>
+                  <p className="font-bold text-of-gray z-10">Subscribe to view {creator.name}&apos;s secret content</p>
                 </div>
               ) : (
                 <>
-                  <p className="text-gray-800 mb-6 leading-relaxed text-lg">{post.content}</p>
+                  <p className="text-of-dark/90 mb-8 leading-relaxed text-xl font-medium">{post.content}</p>
                   {post.mediaUrl && (
-                    <div className="rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+                    <div className="rounded-[2rem] overflow-hidden border-4 border-white shadow-2xl">
                       <Image
                         src={post.mediaUrl}
                         alt="Post content"
                         width={800}
                         height={600}
-                        className="w-full object-cover max-h-[600px]"
+                        className="w-full object-cover max-h-[700px] transition-transform duration-700 hover:scale-105"
                       />
                     </div>
                   )}
@@ -280,8 +288,8 @@ export default function CreatorProfile() {
             </div>
           ))}
           {posts.length === 0 && (
-            <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
-              <p className="text-gray-500 italic">No posts yet.</p>
+            <div className="text-center py-24 bg-white rounded-[2.5rem] border border-of-light shadow-inner">
+              <p className="text-of-gray font-bold italic text-lg tracking-tight">Nothing shared here yet...</p>
             </div>
           )}
         </div>

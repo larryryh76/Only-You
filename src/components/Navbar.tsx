@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { User, LogOut, LayoutDashboard, MessageSquare } from 'lucide-react';
+import Logo from './ui/Logo';
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -15,34 +16,34 @@ export default function Navbar() {
       <div className="flex items-center gap-6">
         {session ? (
           <>
-            <Link href="/messages" className="text-gray-600 hover:text-blue-600 flex items-center gap-2">
-              <MessageSquare size={20} />
-              <span className="hidden md:inline">Messages</span>
+            <Link href="/messages" className="text-of-gray hover:text-primary transition flex items-center gap-2">
+              <MessageSquare size={22} />
+              <span className="hidden md:inline font-semibold">Messages</span>
             </Link>
-            <Link href="/dashboard" className="text-gray-600 hover:text-blue-600 flex items-center gap-2">
-              <LayoutDashboard size={20} />
-              <span className="hidden md:inline">Dashboard</span>
+            <Link href="/dashboard" className="text-of-gray hover:text-primary transition flex items-center gap-2">
+              <LayoutDashboard size={22} />
+              <span className="hidden md:inline font-semibold">Dashboard</span>
             </Link>
-            <div className="flex items-center gap-2 text-gray-800 font-medium">
-              <User size={20} />
-              <span>{session.user?.name}</span>
+            <div className="flex items-center gap-2 text-of-dark font-bold bg-of-light px-3 py-1.5 rounded-full border border-gray-100">
+              <User size={18} className="text-primary" />
+              <span className="text-sm">{session.user?.name}</span>
             </div>
             <button
               onClick={() => signOut()}
-              className="text-gray-600 hover:text-red-600 flex items-center gap-2"
+              className="text-of-gray hover:text-red-500 transition flex items-center gap-2"
             >
-              <LogOut size={20} />
-              <span className="hidden md:inline">Logout</span>
+              <LogOut size={22} />
+              <span className="hidden md:inline font-semibold">Logout</span>
             </button>
           </>
         ) : (
           <>
-            <Link href="/login" className="text-gray-600 hover:text-blue-600 font-medium">
+            <Link href="/login" className="text-of-gray hover:text-primary font-bold uppercase text-xs tracking-wider">
               Login
             </Link>
             <Link
               href="/register"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+              className="bg-primary text-white px-6 py-2 rounded-full font-bold uppercase text-xs tracking-wider hover:bg-primary-hover transition shadow-sm"
             >
               Sign Up
             </Link>

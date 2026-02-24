@@ -13,7 +13,8 @@ import {
   CreditCard,
   PlusSquare,
   Eye,
-  MessageSquare
+  MessageSquare,
+  LayoutDashboard
 } from 'lucide-react';
 
 interface ISubscription {
@@ -134,105 +135,119 @@ export default function Dashboard() {
   if (status === 'loading') return <div className="text-center py-20">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-of-light">
       <Navbar />
-      <main className="max-w-6xl mx-auto py-8 px-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8 capitalize">{role} Dashboard</h1>
+      <main className="max-w-6xl mx-auto py-10 px-6">
+        <div className="flex items-center gap-4 mb-10">
+          <div className="bg-primary p-3 rounded-2xl shadow-lg shadow-primary/20">
+            <LayoutDashboard className="text-white" size={32} />
+          </div>
+          <div>
+            <h1 className="text-4xl font-black text-of-dark tracking-tight uppercase">{role}</h1>
+            <p className="text-of-gray font-bold text-sm tracking-widest">CONTROL PANEL</p>
+          </div>
+        </div>
 
         {role === 'creator' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <div className="lg:col-span-2 space-y-10">
               {/* Create Post */}
-              <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <PlusSquare className="text-blue-600" /> Create New Post
+              <section className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-of-light relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-2 h-full bg-primary"></div>
+                <h2 className="text-2xl font-black text-of-dark mb-6 flex items-center gap-3 tracking-tight">
+                  <PlusSquare className="text-primary" /> Create New Post
                 </h2>
                 <form onSubmit={handleCreatePost}>
                   <textarea
                     value={newPostContent}
                     onChange={(e) => setNewPostContent(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl p-4 min-h-[120px] mb-4 focus:ring-2 focus:ring-blue-500 outline-none"
-                    placeholder="What's on your mind?"
+                    className="w-full border-2 border-of-light rounded-3xl p-6 min-h-[160px] mb-6 focus:border-primary outline-none bg-of-light/30 font-medium transition-colors"
+                    placeholder="Share something exclusive with your fans..."
                   ></textarea>
-                  <button className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition">
+                  <button className="bg-primary text-white px-10 py-4 rounded-full font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-lg shadow-primary/30">
                     Post to Subscribers
                   </button>
                 </form>
               </section>
 
               {/* Subscription Approvals */}
-              <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Clock className="text-orange-500" /> Pending Approvals
+              <section className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-of-light">
+                <h2 className="text-2xl font-black text-of-dark mb-6 flex items-center gap-3 tracking-tight">
+                  <Clock className="text-orange-400" /> Pending Approvals
                 </h2>
                 <div className="space-y-4">
                   {subscriptions.filter((s) => s.status === 'pending').map((sub) => (
-                    <div key={sub._id} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
+                    <div key={sub._id} className="flex justify-between items-center p-6 bg-of-light/50 rounded-3xl border border-of-light group hover:bg-white hover:shadow-md transition-all">
                       <div>
-                        <p className="font-bold text-gray-900">{sub.userId.name}</p>
-                        <p className="text-sm text-gray-500">{sub.paymentMethod}: {sub.paymentProof}</p>
+                        <p className="font-black text-of-dark text-lg tracking-tight">{sub.userId.name}</p>
+                        <div className="flex items-center gap-3 mt-1">
+                           <span className="text-[10px] uppercase font-black text-of-gray tracking-tighter bg-white px-2 py-0.5 rounded border border-of-light">{sub.paymentMethod}</span>
+                           <p className="text-xs font-bold text-primary font-mono">{sub.paymentProof}</p>
+                        </div>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-3">
                         <button
                           onClick={() => handleApproveSubscription(sub._id, true)}
-                          className="bg-green-100 text-green-600 p-2 rounded-lg hover:bg-green-200 transition"
+                          className="bg-white text-green-500 p-3 rounded-2xl hover:bg-green-500 hover:text-white transition shadow-sm border border-green-100"
                         >
-                          <CheckCircle size={20} />
+                          <CheckCircle size={24} />
                         </button>
                         <button
                           onClick={() => handleApproveSubscription(sub._id, false)}
-                          className="bg-red-100 text-red-600 p-2 rounded-lg hover:bg-red-200 transition"
+                          className="bg-white text-red-400 p-3 rounded-2xl hover:bg-red-400 hover:text-white transition shadow-sm border border-red-50"
                         >
-                          <XCircle size={20} />
+                          <XCircle size={24} />
                         </button>
                       </div>
                     </div>
                   ))}
                   {subscriptions.filter((s) => s.status === 'pending').length === 0 && (
-                    <p className="text-gray-500 italic">No pending subscriptions.</p>
+                    <div className="text-center py-10 border-2 border-dashed border-of-light rounded-3xl">
+                       <p className="text-of-gray font-bold italic">No pending fan subscriptions.</p>
+                    </div>
                   )}
                 </div>
               </section>
             </div>
 
-            <div className="space-y-8">
-              <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <CreditCard className="text-blue-600" /> Payment Details
+            <div className="space-y-10">
+              <section className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-of-light">
+                <h2 className="text-xl font-black text-of-dark mb-6 flex items-center gap-3 tracking-tight">
+                  <CreditCard className="text-primary" /> Payout Settings
                 </h2>
-                <form onSubmit={handleUpdatePayment} className="space-y-4">
+                <form onSubmit={handleUpdatePayment} className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Cash App Tag</label>
+                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-2 ml-1">Cash App Tag</label>
                     <input
                       type="text"
                       value={paymentDetails.cashapp}
                       onChange={(e) => setPaymentDetails({ ...paymentDetails, cashapp: e.target.value })}
-                      className="w-full border rounded-lg p-2"
+                      className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors"
                       placeholder="$YourTag"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Crypto Address</label>
+                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-2 ml-1">Crypto Address</label>
                     <input
                       type="text"
                       value={paymentDetails.crypto}
                       onChange={(e) => setPaymentDetails({ ...paymentDetails, crypto: e.target.value })}
-                      className="w-full border rounded-lg p-2"
+                      className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors"
                       placeholder="BTC/ETH Address"
                     />
                   </div>
-                  <button className="w-full bg-blue-600 text-white py-2 rounded-lg font-bold">Update Details</button>
+                  <button className="w-full bg-of-dark text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-black transition shadow-lg">Save Settings</button>
                 </form>
               </section>
 
-              <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Users className="text-blue-600" /> Stats
+              <section className="bg-primary p-8 rounded-[2.5rem] shadow-xl shadow-primary/20 text-white">
+                <h2 className="text-xl font-black mb-6 flex items-center gap-3 tracking-tight">
+                  <Users /> Subscriber Stats
                 </h2>
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Active Subscribers</span>
-                    <span className="font-bold text-2xl">{subscriptions.filter((s) => s.status === 'active').length}</span>
+                  <div className="bg-white/10 p-6 rounded-3xl backdrop-blur-sm border border-white/10">
+                    <span className="text-white/70 text-xs font-black uppercase tracking-widest">Total Active</span>
+                    <p className="font-black text-5xl mt-1">{subscriptions.filter((s) => s.status === 'active').length}</p>
                   </div>
                 </div>
               </section>
@@ -241,37 +256,40 @@ export default function Dashboard() {
         )}
 
         {role === 'user' && (
-          <div className="space-y-8">
-            <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-              <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <CreditCard className="text-blue-600" /> My Subscriptions
+          <div className="space-y-10">
+            <section className="bg-white p-10 rounded-[3rem] shadow-xl border border-of-light">
+              <h2 className="text-3xl font-black text-of-dark mb-10 flex items-center gap-4 tracking-tight">
+                <CreditCard className="text-primary" size={32} /> My Subscriptions
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {subscriptions.map((sub) => (
-                  <div key={sub._id} className="p-4 border border-gray-100 rounded-xl bg-gray-50">
-                    <div className="flex justify-between items-start mb-4">
+                  <div key={sub._id} className="p-8 border-2 border-of-light rounded-[2.5rem] bg-of-light/30 hover:bg-white hover:border-primary hover:shadow-xl transition-all duration-300 group">
+                    <div className="flex justify-between items-start mb-6">
                       <div>
-                        <h3 className="font-bold text-gray-900">{sub.creatorId.name}</h3>
-                        <p className="text-sm text-gray-500">@{sub.creatorId.username}</p>
+                        <h3 className="font-black text-of-dark text-xl tracking-tight">{sub.creatorId.name}</h3>
+                        <p className="text-primary font-black text-sm italic">@{sub.creatorId.username}</p>
                       </div>
-                      <span className={`px-2 py-1 rounded-md text-xs font-bold uppercase ${
-                        sub.status === 'active' ? 'bg-green-100 text-green-600' :
-                        sub.status === 'pending' ? 'bg-orange-100 text-orange-600' :
-                        'bg-gray-100 text-gray-600'
+                      <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                        sub.status === 'active' ? 'bg-green-500 text-white' :
+                        sub.status === 'pending' ? 'bg-orange-400 text-white' :
+                        'bg-of-gray text-white'
                       }`}>
                         {sub.status}
                       </span>
                     </div>
                     <Link
                       href={`/${sub.creatorId.username}`}
-                      className="text-blue-600 text-sm font-medium hover:underline flex items-center gap-1"
+                      className="w-full flex items-center justify-center gap-2 bg-white text-primary border border-primary px-4 py-3 rounded-2xl font-black uppercase text-[10px] tracking-widest group-hover:bg-primary group-hover:text-white transition-all shadow-sm"
                     >
                       <Eye size={16} /> View Profile
                     </Link>
                   </div>
                 ))}
                 {subscriptions.length === 0 && (
-                  <p className="text-gray-500 italic">You are not subscribed to any creators yet.</p>
+                  <div className="col-span-full py-20 border-4 border-dashed border-of-light rounded-[3rem] text-center">
+                    <p className="text-of-gray font-black text-xl italic tracking-tight">You haven&apos;t joined any fan clubs yet.</p>
+                    <Link href="/" className="inline-block mt-6 text-primary font-black hover:underline uppercase text-sm tracking-widest">Find Creators →</Link>
+                  </div>
                 )}
               </div>
             </section>
@@ -279,50 +297,50 @@ export default function Dashboard() {
         )}
 
         {role === 'admin' && (
-          <div className="space-y-8">
-            <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-              <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-                <CreditCard className="text-blue-600" /> All Subscriptions
+          <div className="space-y-10">
+            <section className="bg-white p-10 rounded-[3rem] shadow-xl border border-of-light overflow-hidden">
+              <h2 className="text-3xl font-black text-of-dark mb-10 flex items-center gap-4 tracking-tight">
+                <CreditCard className="text-primary" size={32} /> Subscription Ledger
               </h2>
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="border-b border-gray-100">
-                      <th className="py-4 font-bold text-gray-900">User</th>
-                      <th className="py-4 font-bold text-gray-900">Creator</th>
-                      <th className="py-4 font-bold text-gray-900">Proof</th>
-                      <th className="py-4 font-bold text-gray-900">Status</th>
-                      <th className="py-4 font-bold text-gray-900">Actions</th>
+                    <tr className="border-b-2 border-of-light">
+                      <th className="pb-6 font-black text-of-gray uppercase text-[10px] tracking-widest">Subscriber</th>
+                      <th className="pb-6 font-black text-of-gray uppercase text-[10px] tracking-widest">Creator</th>
+                      <th className="pb-6 font-black text-of-gray uppercase text-[10px] tracking-widest">Ref/Proof</th>
+                      <th className="pb-6 font-black text-of-gray uppercase text-[10px] tracking-widest text-center">Status</th>
+                      <th className="pb-6 font-black text-of-gray uppercase text-[10px] tracking-widest text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y divide-of-light/50">
                     {subscriptions.map((sub) => (
-                      <tr key={sub._id} className="border-b border-gray-50">
-                        <td className="py-4 text-gray-800">{sub.userId.name}</td>
-                        <td className="py-4 text-gray-500">{sub.creatorId.name}</td>
-                        <td className="py-4 text-sm text-gray-500">{sub.paymentProof}</td>
-                        <td className="py-4">
-                          <span className={`px-2 py-1 rounded-md text-xs font-bold ${
-                            sub.status === 'active' ? 'bg-green-100 text-green-600' :
-                            sub.status === 'pending' ? 'bg-orange-100 text-orange-600' :
-                            'bg-red-100 text-red-600'
+                      <tr key={sub._id} className="group hover:bg-of-light/20 transition-colors">
+                        <td className="py-6 font-black text-of-dark tracking-tight">{sub.userId.name}</td>
+                        <td className="py-6 text-of-gray font-bold tracking-tight">@{sub.creatorId.username}</td>
+                        <td className="py-6 text-xs font-mono text-primary font-black uppercase">{sub.paymentProof}</td>
+                        <td className="py-6 text-center">
+                          <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                            sub.status === 'active' ? 'bg-green-500/10 text-green-600' :
+                            sub.status === 'pending' ? 'bg-orange-500/10 text-orange-600' :
+                            'bg-red-500/10 text-red-600'
                           }`}>
-                            {sub.status.toUpperCase()}
+                            {sub.status}
                           </span>
                         </td>
-                        <td className="py-4">
-                          <div className="flex gap-2">
+                        <td className="py-6 text-right">
+                          <div className="flex gap-2 justify-end">
                             <button
                               onClick={() => handleApproveSubscription(sub._id, true)}
-                              className="text-green-600 hover:underline text-sm font-bold"
+                              className="text-white bg-green-500 p-2 rounded-xl hover:bg-green-600 shadow-md transition"
                             >
-                              Approve
+                              <CheckCircle size={18} />
                             </button>
                             <button
                               onClick={() => handleApproveSubscription(sub._id, false)}
-                              className="text-red-600 hover:underline text-sm font-bold"
+                              className="text-white bg-red-500 p-2 rounded-xl hover:bg-red-600 shadow-md transition"
                             >
-                              Reject
+                              <XCircle size={18} />
                             </button>
                           </div>
                         </td>
@@ -333,79 +351,96 @@ export default function Dashboard() {
               </div>
             </section>
 
-             <section className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-              <div className="flex justify-between items-center mb-6">
-                <div className="flex gap-4">
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    <Users className="text-blue-600" /> Manage Creators
+             <section className="bg-white p-10 rounded-[3rem] shadow-xl border border-of-light overflow-hidden">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+                <div className="flex flex-wrap items-center gap-6">
+                  <h2 className="text-3xl font-black text-of-dark tracking-tight flex items-center gap-4">
+                    <Users className="text-primary" size={32} /> Creator Hub
                   </h2>
                   <Link
                     href="/messages"
-                    className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:bg-blue-50 px-3 py-1 rounded-lg transition"
+                    className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-5 py-2.5 rounded-full hover:bg-primary hover:text-white transition-all shadow-sm"
                   >
-                    <MessageSquare size={16} /> View All Messages
+                    <MessageSquare size={16} /> Global Messages
                   </Link>
                 </div>
                 <button
                   onClick={() => setShowCreateCreator(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-700 transition flex items-center gap-2"
+                  className="bg-primary text-white px-8 py-4 rounded-3xl font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-xl shadow-primary/30 flex items-center gap-3"
                 >
-                  <PlusSquare size={20} /> Add Creator
+                  <PlusSquare size={20} /> Add New Talent
                 </button>
               </div>
 
               {showCreateCreator && (
-                <div className="mb-8 p-6 bg-gray-50 rounded-2xl border border-gray-200">
-                  <h3 className="font-bold mb-4">Create New Creator</h3>
-                  <form onSubmit={handleCreateCreator} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input
-                      type="text"
-                      placeholder="Name"
-                      className="p-2 border rounded-lg"
-                      value={newCreator.name}
-                      onChange={(e) => setNewCreator({ ...newCreator, name: e.target.value })}
-                      required
-                    />
-                    <input
-                      type="email"
-                      placeholder="Email"
-                      className="p-2 border rounded-lg"
-                      value={newCreator.email}
-                      onChange={(e) => setNewCreator({ ...newCreator, email: e.target.value })}
-                      required
-                    />
-                    <input
-                      type="password"
-                      placeholder="Password"
-                      className="p-2 border rounded-lg"
-                      value={newCreator.password}
-                      onChange={(e) => setNewCreator({ ...newCreator, password: e.target.value })}
-                      required
-                    />
-                    <input
-                      type="text"
-                      placeholder="Username (for profile link)"
-                      className="p-2 border rounded-lg"
-                      value={newCreator.username}
-                      onChange={(e) => setNewCreator({ ...newCreator, username: e.target.value })}
-                      required
-                    />
-                    <textarea
-                      placeholder="Bio"
-                      className="p-2 border rounded-lg md:col-span-2"
-                      value={newCreator.bio}
-                      onChange={(e) => setNewCreator({ ...newCreator, bio: e.target.value })}
-                    />
-                    <input
-                      type="number"
-                      placeholder="Display Follower Count"
-                      className="p-2 border rounded-lg"
-                      value={newCreator.displayFollowerCount}
-                      onChange={(e) => setNewCreator({ ...newCreator, displayFollowerCount: parseInt(e.target.value) })}
-                    />
-                    <div className="md:col-span-2 flex gap-2">
-                      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold">Create</button>
-                      <button type="button" onClick={() => setShowCreateCreator(false)} className="bg-gray-200 px-4 py-2 rounded-lg">Cancel</button>
+                <div className="mb-12 p-10 bg-of-light rounded-[2.5rem] border-2 border-primary/20 shadow-inner">
+                  <h3 className="text-xl font-black text-of-dark mb-8 tracking-tight uppercase">Talent Registration</h3>
+                  <form onSubmit={handleCreateCreator} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Full Name</label>
+                       <input
+                         type="text"
+                         placeholder="John Doe"
+                         className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
+                         value={newCreator.name}
+                         onChange={(e) => setNewCreator({ ...newCreator, name: e.target.value })}
+                         required
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Email Address</label>
+                       <input
+                         type="email"
+                         placeholder="jane@example.com"
+                         className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
+                         value={newCreator.email}
+                         onChange={(e) => setNewCreator({ ...newCreator, email: e.target.value })}
+                         required
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Secure Password</label>
+                       <input
+                         type="password"
+                         placeholder="••••••••"
+                         className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
+                         value={newCreator.password}
+                         onChange={(e) => setNewCreator({ ...newCreator, password: e.target.value })}
+                         required
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Platform Username</label>
+                       <input
+                         type="text"
+                         placeholder="unique_handle"
+                         className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
+                         value={newCreator.username}
+                         onChange={(e) => setNewCreator({ ...newCreator, username: e.target.value })}
+                         required
+                       />
+                    </div>
+                    <div className="md:col-span-2 space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Creator Bio</label>
+                       <textarea
+                         placeholder="A brief description of content style..."
+                         className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm min-h-[100px]"
+                         value={newCreator.bio}
+                         onChange={(e) => setNewCreator({ ...newCreator, bio: e.target.value })}
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Initial Followers</label>
+                       <input
+                         type="number"
+                         className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
+                         value={newCreator.displayFollowerCount}
+                         onChange={(e) => setNewCreator({ ...newCreator, displayFollowerCount: parseInt(e.target.value) })}
+                       />
+                    </div>
+                    <div className="md:col-span-2 flex gap-4 pt-4">
+                      <button type="submit" className="bg-primary text-white px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-primary/30">Activate Account</button>
+                      <button type="button" onClick={() => setShowCreateCreator(false)} className="bg-white text-of-gray px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-widest border border-of-light hover:bg-of-light transition">Cancel</button>
                     </div>
                   </form>
                 </div>
@@ -413,27 +448,27 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="border-b border-gray-100">
-                      <th className="py-4 font-bold text-gray-900">Name</th>
-                      <th className="py-4 font-bold text-gray-900">Username</th>
-                      <th className="py-4 font-bold text-gray-900">Status</th>
-                      <th className="py-4 font-bold text-gray-900">Actions</th>
+                    <tr className="border-b-2 border-of-light">
+                      <th className="pb-6 font-black text-of-gray uppercase text-[10px] tracking-widest">Talent Name</th>
+                      <th className="pb-6 font-black text-of-gray uppercase text-[10px] tracking-widest">Handle</th>
+                      <th className="pb-6 font-black text-of-gray uppercase text-[10px] tracking-widest text-center">Status</th>
+                      <th className="pb-6 font-black text-of-gray uppercase text-[10px] tracking-widest text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="divide-y divide-of-light/50">
                     {creators.map((creator) => (
-                      <tr key={creator._id} className="border-b border-gray-50">
-                        <td className="py-4 text-gray-800">{creator.name}</td>
-                        <td className="py-4 text-gray-500">@{creator.username}</td>
-                        <td className="py-4">
-                          <span className={`px-2 py-1 rounded-md text-xs font-bold ${creator.isVerified ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-600'}`}>
+                      <tr key={creator._id} className="group hover:bg-of-light/20 transition-colors">
+                        <td className="py-6 font-black text-of-dark tracking-tight">{creator.name}</td>
+                        <td className="py-6 text-primary font-black italic tracking-tight">@{creator.username}</td>
+                        <td className="py-6 text-center">
+                          <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${creator.isVerified ? 'bg-primary/10 text-primary' : 'bg-of-gray/10 text-of-gray'}`}>
                             {creator.isVerified ? 'VERIFIED' : 'PENDING'}
                           </span>
                         </td>
-                        <td className="py-4">
-                          <div className="flex gap-2">
-                            <Link href={`/${creator.username}`} className="text-blue-600 hover:underline text-sm">View</Link>
-                            <button className="text-red-600 hover:underline text-sm">Delete</button>
+                        <td className="py-6 text-right">
+                          <div className="flex gap-4 justify-end items-center">
+                            <Link href={`/${creator.username}`} className="text-[10px] font-black uppercase tracking-widest text-of-gray hover:text-primary transition-colors">View Page</Link>
+                            <button className="text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-600 transition-colors">Delete</button>
                           </div>
                         </td>
                       </tr>
