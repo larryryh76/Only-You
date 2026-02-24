@@ -31,6 +31,8 @@ export async function POST(req: Request) {
       role,
     });
 
+    console.log('User registered successfully:', email, 'Role:', role);
+
     return NextResponse.json({ message: 'User registered successfully', userId: user._id }, { status: 201 });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
