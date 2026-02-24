@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Navbar from '@/components/Navbar';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { CheckCircle } from 'lucide-react';
+import { formatCompactNumber } from '@/lib/formatters';
 
 interface Creator {
   _id: string;
@@ -16,7 +18,15 @@ interface Creator {
 }
 
 export default function Home() {
+  const { status } = useSession();
+  const router = useRouter();
   const [creators, setCreators] = useState<Creator[]>([]);
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push('/dashboard');
+    }
+  }, [status, router]);
 
   useEffect(() => {
     fetch('/api/creators')
@@ -25,8 +35,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-of-light">
-      <Navbar />
+    <div className="min-h-screen">
       <main className="max-w-6xl mx-auto py-12 px-6">
         <header className="text-center mb-16 py-10">
           <h1 className="text-6xl font-black text-of-dark mb-6 tracking-tighter">
@@ -87,7 +96,7 @@ export default function Home() {
                   </p>
                   <div className="flex justify-between items-center border-t border-of-light pt-6">
                     <div className="flex flex-col">
-                      <span className="font-black text-of-dark text-lg">{creator.displayFollowerCount || 0}</span>
+                      <span className="font-black text-of-dark text-lg">{formatCompactNumber(creator.displayFollowerCount || 0)}</span>
                       <span className="text-[10px] uppercase tracking-widest text-of-gray font-bold">Followers</span>
                     </div>
                     <span className="bg-of-light text-primary px-4 py-2 rounded-full font-black text-xs uppercase tracking-wider group-hover:bg-primary group-hover:text-white transition-colors">
