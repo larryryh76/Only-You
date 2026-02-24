@@ -9,8 +9,10 @@ export default function Navbar() {
   const { data: session } = useSession();
 
   return (
-    <nav className="bg-white border-b border-of-light py-2 px-6 flex justify-between items-center sticky top-0 z-50 h-16">
-      <Logo />
+    <nav className="bg-white border-b border-gray-200 py-4 px-6 flex justify-between items-center sticky top-0 z-50">
+      <Link href="/" className="text-2xl font-bold text-blue-600">
+        OnlyFans
+      </Link>
       <div className="flex items-center gap-6">
         {session ? (
           <>
