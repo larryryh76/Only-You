@@ -5,6 +5,7 @@ import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { CheckCircle2 } from 'lucide-react';
 
 interface Creator {
   _id: string;
@@ -14,6 +15,27 @@ interface Creator {
   bio?: string;
   displayFollowerCount?: number;
 }
+
+const BLOG_POSTS = [
+  {
+    id: 1,
+    author: 'OnlyFans',
+    handle: 'onlyfans',
+    date: 'Yesterday',
+    title: 'Cyprus living, inside and out.',
+    excerpt: '@roxxyharris gives a tour of her new home, sharing personal touches and the upgrades she\'s ex-',
+    image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=800',
+  },
+  {
+    id: 2,
+    author: 'OnlyFans',
+    handle: 'onlyfans',
+    date: 'Yesterday',
+    title: 'Hidden gems in Malibu.',
+    excerpt: '@karlyetaylor2 and @itsnatdogx2 discover a hidden Basque-style market in Malibu, then wander through a charming little com-',
+    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&q=80&w=800',
+  }
+];
 
 export default function Home() {
   const { status } = useSession();
@@ -32,7 +54,12 @@ export default function Home() {
   useEffect(() => {
     fetch('/api/creators')
       .then((res) => res.json())
-      .then((data) => setCreators(data));
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setCreators(data);
+        }
+      })
+      .catch(err => console.error("Error fetching creators:", err));
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -51,8 +78,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center pt-12 px-6">
-      <div className="w-full max-w-md flex flex-col items-center">
+    <div className="min-h-screen bg-white flex flex-col items-center">
+      {/* Hero Section */}
+      <div className="w-full max-w-md flex flex-col items-center pt-12 px-6 pb-16">
         <Image
           src="/logo.jpg"
           alt="OnlyFans"
@@ -61,13 +89,12 @@ export default function Home() {
           className="h-10 w-auto mb-8"
         />
 
-        <h1 className="text-3xl font-bold text-of-dark mb-10 text-center">
+        <h1 className="text-3xl font-bold text-of-dark mb-10 text-center uppercase tracking-tight">
           Sign up to support your favorite creators
         </h1>
 
         <form onSubmit={handleLogin} className="w-full space-y-4">
           <div className="space-y-1">
-            <label className="text-sm font-bold text-of-dark">Log in</label>
             <input
               type="email"
               value={email}
@@ -100,15 +127,17 @@ export default function Home() {
 
         <div className="flex justify-between w-full mt-6 text-sm">
           <Link href="#" className="text-primary hover:underline">Forgot password?</Link>
-          <Link href="/register" className="text-primary hover:underline">Sign up for OnlyFans</Link>
+          <Link href="/register" className="text-primary hover:underline font-bold">Sign up for OnlyFans</Link>
         </div>
 
         <div className="mt-12 w-full space-y-3">
-          <button className="w-full flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-full font-bold text-sm uppercase">
-            <span className="text-blue-400 font-bold">X</span> Sign in with X
+          <button className="w-full flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-full font-bold text-sm uppercase hover:bg-gray-50 transition">
+            <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+            Sign in with X
           </button>
-          <button className="w-full flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-full font-bold text-sm uppercase">
-            <span className="text-red-500 font-bold">G</span> Sign in with Google
+          <button className="w-full flex items-center justify-center gap-3 border border-gray-300 py-3 rounded-full font-bold text-sm uppercase hover:bg-gray-50 transition">
+            <svg className="w-5 h-5" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path><path fill="none" d="M0 0h48v48H0z"></path></svg>
+            Sign in with Google
           </button>
         </div>
 
@@ -121,7 +150,7 @@ export default function Home() {
                   {creator.profileImage ? (
                     <Image src={creator.profileImage} alt="" width={48} height={48} className="object-cover h-full w-full" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-primary text-white font-bold text-xs">{creator.name[0]}</div>
+                    <div className="w-full h-full flex items-center justify-center bg-primary text-white font-bold text-xs uppercase">{creator.name[0]}</div>
                   )}
                 </div>
               ))}
@@ -129,6 +158,64 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* Blog Section */}
+      <div className="w-full bg-of-light/30 border-t border-gray-100 pt-16 pb-20 px-6">
+        <div className="max-w-md mx-auto">
+          <h2 className="text-lg font-bold text-of-dark mb-8">Latest featured posts</h2>
+
+          <div className="space-y-8">
+            {BLOG_POSTS.map((post) => (
+              <div key={post.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                      <Image src="/logo.jpg" alt="OnlyFans" width={40} height={40} className="w-6 h-auto invert" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1">
+                        <span className="font-bold text-sm">{post.author}</span>
+                        <CheckCircle2 size={14} className="text-primary fill-primary text-white" />
+                      </div>
+                      <span className="text-xs text-of-gray">@{post.handle}</span>
+                    </div>
+                  </div>
+                  <span className="text-xs text-of-gray">{post.date}</span>
+                </div>
+
+                <div className="px-4 pb-2">
+                  <p className="text-sm text-of-dark font-medium leading-tight">
+                    <span className="font-bold">{post.title}</span> {post.excerpt}
+                  </p>
+                  <button className="text-primary text-sm font-bold mt-2 hover:underline">Read more</button>
+                </div>
+
+                <div className="aspect-video w-full relative">
+                  <Image src={post.image} alt={post.title} fill className="object-cover" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="w-full border-t border-gray-100 py-10 px-6 bg-white">
+        <div className="max-w-md mx-auto flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] text-of-gray font-medium">
+          <Link href="#" className="hover:text-primary">About</Link>
+          <Link href="#" className="hover:text-primary">Contact</Link>
+          <Link href="#" className="hover:text-primary">Help</Link>
+          <Link href="#" className="hover:text-primary">Terms of Service</Link>
+          <Link href="#" className="hover:text-primary">Privacy Policy</Link>
+          <Link href="#" className="hover:text-primary">Complaints Policy</Link>
+          <Link href="#" className="hover:text-primary">Cookies</Link>
+          <Link href="#" className="hover:text-primary">Branding</Link>
+          <Link href="#" className="hover:text-primary">Store</Link>
+        </div>
+        <div className="mt-8 text-center text-[11px] text-of-gray/60 uppercase tracking-widest font-bold">
+          © {new Date().getFullYear()} OnlyFans
+        </div>
+      </footer>
     </div>
   );
 }

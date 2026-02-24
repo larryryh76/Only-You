@@ -37,19 +37,23 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
+          console.log('Authorize attempt for email:', credentials?.email);
           if (!credentials?.email || !credentials?.password) {
             throw new Error('Please enter an email and password');
           }
 
           await dbConnect();
+          console.log('Database connected successfully');
 
           const user = await User.findOne({ email: credentials.email });
+          console.log('User found in DB:', user ? 'Yes' : 'No');
 
           if (!user) {
             throw new Error('No user found with this email');
           }
 
           const isValid = await bcrypt.compare(credentials.password, user.password);
+          console.log('Password is valid:', isValid ? 'Yes' : 'No');
 
           if (!isValid) {
             throw new Error('Invalid password');
