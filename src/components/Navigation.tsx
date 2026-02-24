@@ -13,11 +13,12 @@ import {
 import Logo from './ui/Logo';
 
 export default function Navigation() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const pathname = usePathname();
 
-  // Don't show navigation on auth pages
+  // Don't show navigation on auth pages or landing page (if unauthenticated)
   if (pathname === '/login' || pathname === '/register') return null;
+  if (pathname === '/' && status !== 'authenticated') return null;
 
   const navItems = [
     { label: 'Home', href: '/', icon: Home },
