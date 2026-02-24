@@ -4,27 +4,38 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Loader2 } from 'lucide-react';
 
 export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch('/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password }),
-    });
+    setIsLoading(true);
+    setError('');
 
-    if (res.ok) {
-      router.push('/login');
-    } else {
-      const data = await res.json();
-      setError(data.message);
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (res.ok) {
+        router.push('/login');
+      } else {
+        const data = await res.json();
+        setError(data.message);
+        setIsLoading(false);
+      }
+    } catch (_err) {
+      setError('An unexpected error occurred. Please try again.');
+      setIsLoading(false);
     }
   };
 
@@ -79,9 +90,17 @@ export default function Register() {
 
           <button
             type="submit"
-            className="w-full bg-primary text-white py-3 rounded-full font-bold uppercase tracking-wide hover:bg-primary-hover transition mt-2"
+            disabled={isLoading}
+            className="w-full bg-primary text-white py-3 rounded-full font-bold uppercase tracking-wide hover:bg-primary-hover transition mt-2 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            SIGN UP
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                SIGNING UP...
+              </>
+            ) : (
+              'SIGN UP'
+            )}
           </button>
         </form>
 
