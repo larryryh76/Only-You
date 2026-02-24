@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import { X } from 'lucide-react';
 
@@ -30,7 +29,6 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-of-light flex flex-col">
-      <Navbar />
       <div className="flex-1 flex items-center justify-center py-20 px-6">
         <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-of-light w-full max-w-md relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-2 bg-primary"></div>

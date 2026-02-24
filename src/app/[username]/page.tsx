@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import Navbar from '@/components/Navbar';
 import { CheckCircle, Lock, MessageCircle, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { formatCompactNumber } from '@/lib/formatters';
 
 interface Post {
   _id: string;
@@ -98,8 +98,7 @@ export default function CreatorProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-of-light">
-      <Navbar />
+    <div className="min-h-screen">
       <div className="max-w-4xl mx-auto py-8 px-6">
         {/* Cover Image Placeholder */}
         <div className="h-56 bg-gradient-to-br from-primary to-primary-hover rounded-t-3xl shadow-inner"></div>
@@ -163,7 +162,7 @@ export default function CreatorProfile() {
               <p className="text-[10px] uppercase tracking-widest text-of-gray font-bold mt-1">Posts</p>
             </div>
             <div className="text-center">
-              <p className="font-black text-of-dark text-2xl">{creator.displayFollowerCount || 0}</p>
+              <p className="font-black text-of-dark text-2xl">{formatCompactNumber(creator.displayFollowerCount || 0)}</p>
               <p className="text-[10px] uppercase tracking-widest text-of-gray font-bold mt-1">Followers</p>
             </div>
           </div>
@@ -261,13 +260,34 @@ export default function CreatorProfile() {
               </div>
 
               {post.isLocked ? (
-                <div className="bg-of-light rounded-[2rem] py-28 flex flex-col items-center justify-center text-of-gray border-4 border-dashed border-white shadow-inner overflow-hidden relative group">
-                  <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="bg-white p-6 rounded-full mb-6 shadow-lg z-10">
-                    <Lock size={40} className="text-primary" />
+                <div className="relative rounded-[2rem] overflow-hidden border border-of-light aspect-video group">
+                  {/* Blurred Background Preview */}
+                  <div className="absolute inset-0 bg-gray-200">
+                    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-of-dark/20 blur-3xl opacity-50 scale-110"></div>
                   </div>
-                  <p className="font-black text-of-dark text-2xl mb-2 tracking-tight z-10">Exclusive Post</p>
-                  <p className="font-bold text-of-gray z-10">Subscribe to view {creator.name}&apos;s secret content</p>
+
+                  {/* Subtle Pattern overlay */}
+                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+
+                  {/* Dark Glass Overlay */}
+                  <div className="absolute inset-0 bg-black/40 backdrop-blur-[20px] transition-all duration-500 group-hover:bg-black/50"></div>
+
+                  {/* Content Overlay */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-10">
+                    <div className="bg-white/10 backdrop-blur-md p-6 rounded-full mb-6 border border-white/20 shadow-2xl transform transition-transform duration-500 group-hover:scale-110">
+                      <Lock size={48} className="text-white" />
+                    </div>
+                    <p className="font-black text-white text-3xl mb-3 tracking-tight shadow-sm uppercase">Exclusive Content</p>
+                    <p className="font-bold text-white/80 max-w-xs leading-snug drop-shadow-md">
+                      Subscribe to unlock {creator.name}&apos;s secret posts and media
+                    </p>
+                    <button
+                       onClick={() => session ? setShowSubModal(true) : router.push('/login')}
+                       className="mt-8 bg-primary text-white px-8 py-3 rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform shadow-xl"
+                    >
+                      Unlock Now
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <>

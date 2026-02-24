@@ -3,7 +3,6 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense, useCallback } from 'react';
-import Navbar from '@/components/Navbar';
 import { Send, MessageSquare, User, CreditCard } from 'lucide-react';
 import Image from 'next/image';
 
@@ -264,8 +263,7 @@ function MessagesContent() {
 
 export default function Messages() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col h-screen overflow-hidden">
-      <Navbar />
+    <div className="min-h-screen flex flex-col h-screen overflow-hidden">
       <Suspense fallback={<div className="text-center py-20">Loading messages...</div>}>
         <MessagesContent />
       </Suspense>

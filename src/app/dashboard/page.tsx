@@ -3,7 +3,6 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
-import Navbar from '@/components/Navbar';
 import Link from 'next/link';
 import {
   Users,
@@ -16,6 +15,7 @@ import {
   MessageSquare,
   LayoutDashboard
 } from 'lucide-react';
+import { formatCompactNumber } from '@/lib/formatters';
 
 interface ISubscription {
   _id: string;
@@ -135,8 +135,7 @@ export default function Dashboard() {
   if (status === 'loading') return <div className="text-center py-20">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-of-light">
-      <Navbar />
+    <div className="min-h-screen">
       <main className="max-w-6xl mx-auto py-10 px-6">
         <div className="flex items-center gap-4 mb-10">
           <div className="bg-primary p-3 rounded-2xl shadow-lg shadow-primary/20">
@@ -247,7 +246,7 @@ export default function Dashboard() {
                 <div className="space-y-4">
                   <div className="bg-white/10 p-6 rounded-3xl backdrop-blur-sm border border-white/10">
                     <span className="text-white/70 text-xs font-black uppercase tracking-widest">Total Active</span>
-                    <p className="font-black text-5xl mt-1">{subscriptions.filter((s) => s.status === 'active').length}</p>
+                    <p className="font-black text-5xl mt-1">{formatCompactNumber(subscriptions.filter((s) => s.status === 'active').length)}</p>
                   </div>
                 </div>
               </section>
