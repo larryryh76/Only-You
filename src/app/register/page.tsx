@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { X } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -29,75 +29,67 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-of-light flex flex-col">
-      <div className="flex-1 flex items-center justify-center py-20 px-6">
-        <div className="bg-white p-10 rounded-[2.5rem] shadow-2xl border border-of-light w-full max-w-md relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-2 bg-primary"></div>
+    <div className="min-h-screen bg-white flex flex-col items-center pt-12 px-6">
+      <div className="w-full max-w-md flex flex-col items-center">
+        <Image
+          src="/logo.jpg"
+          alt="OnlyFans"
+          width={180}
+          height={40}
+          className="h-10 w-auto mb-8"
+        />
 
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-black text-of-dark tracking-tight uppercase mb-2">Join the Club</h1>
-            <p className="text-of-gray font-bold text-sm tracking-widest uppercase">Create your fan account</p>
+        <h1 className="text-3xl font-bold text-of-dark mb-10 text-center uppercase tracking-tight">
+          Sign Up
+        </h1>
+
+        <form onSubmit={handleSubmit} className="w-full space-y-4">
+          <div className="space-y-1">
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Full Name"
+              className="w-full border border-gray-300 rounded-md px-4 py-3 outline-none focus:border-primary"
+              required
+            />
+          </div>
+          <div className="space-y-1">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              className="w-full border border-gray-300 rounded-md px-4 py-3 outline-none focus:border-primary"
+              required
+            />
+          </div>
+          <div className="space-y-1">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full border border-gray-300 rounded-md px-4 py-3 outline-none focus:border-primary"
+              required
+            />
           </div>
 
-          {error && (
-            <div className="bg-red-50 border-2 border-red-100 text-red-600 p-4 rounded-2xl mb-8 text-center font-bold text-sm flex items-center justify-center gap-2">
-              <X size={18} /> {error}
-            </div>
-          )}
+          {error && <p className="text-red-500 text-sm font-bold">{error}</p>}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label htmlFor="name" className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Full Name</label>
-              <input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full border-2 border-of-light rounded-2xl px-6 py-4 outline-none focus:border-primary bg-of-light/30 font-bold transition-all"
-                placeholder="John Doe"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Email Address</label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full border-2 border-of-light rounded-2xl px-6 py-4 outline-none focus:border-primary bg-of-light/30 font-bold transition-all"
-                placeholder="jane@example.com"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Password</label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border-2 border-of-light rounded-2xl px-6 py-4 outline-none focus:border-primary bg-of-light/30 font-bold transition-all"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-primary text-white py-5 rounded-3xl font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-xl shadow-primary/30 mt-4"
-            >
-              Get Started
-            </button>
-          </form>
+          <button
+            type="submit"
+            className="w-full bg-primary text-white py-3 rounded-full font-bold uppercase tracking-wide hover:bg-primary-hover transition mt-2"
+          >
+            SIGN UP
+          </button>
+        </form>
 
-          <div className="mt-10 pt-8 border-t border-of-light text-center">
-            <p className="text-of-gray font-bold text-sm">
-              Already have an account?{' '}
-              <Link href="/login" className="text-primary hover:underline">
-                Sign in
-              </Link>
-            </p>
-          </div>
+        <div className="mt-6 text-sm text-center">
+          <p className="text-of-gray">
+            Already have an account?{' '}
+            <Link href="/login" className="text-primary hover:underline font-bold">Log in</Link>
+          </p>
         </div>
       </div>
     </div>

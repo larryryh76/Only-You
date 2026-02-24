@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Only-You | Exclusive Content",
+  title: "OnlyFans | Exclusive Content",
   description: "Connect with your favorite creators",
 };
 
