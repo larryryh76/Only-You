@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
+import FeaturedPosts from '@/components/FeaturedPosts';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -104,13 +105,33 @@ export default function Register() {
           </button>
         </form>
 
-        <div className="mt-6 text-sm text-center">
+        <div className="mt-6 text-sm text-center mb-16">
           <p className="text-of-gray">
             Already have an account?{' '}
             <Link href="/login" className="text-primary hover:underline font-bold">Log in</Link>
           </p>
         </div>
       </div>
+
+      <FeaturedPosts />
+
+      {/* Footer */}
+      <footer className="w-full border-t border-gray-100 py-10 px-6 bg-white">
+        <div className="max-w-md mx-auto flex flex-wrap justify-center gap-x-6 gap-y-3 text-[13px] text-of-gray font-medium">
+          <Link href="#" className="hover:text-primary">About</Link>
+          <Link href="#" className="hover:text-primary">Contact</Link>
+          <Link href="#" className="hover:text-primary">Help</Link>
+          <Link href="#" className="hover:text-primary">Terms of Service</Link>
+          <Link href="#" className="hover:text-primary">Privacy Policy</Link>
+          <Link href="#" className="hover:text-primary">Complaints Policy</Link>
+          <Link href="#" className="hover:text-primary">Cookies</Link>
+          <Link href="#" className="hover:text-primary">Branding</Link>
+          <Link href="#" className="hover:text-primary">Store</Link>
+        </div>
+        <div className="mt-8 text-center text-[11px] text-of-gray/60 uppercase tracking-widest font-bold">
+          © {new Date().getFullYear()} OnlyFans
+        </div>
+      </footer>
     </div>
   );
 }
