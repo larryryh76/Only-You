@@ -32,7 +32,7 @@ export default function Login() {
       } else {
         router.push('/dashboard');
       }
-    } catch (_err) {
+    } catch {
       setError('An unexpected error occurred. Please try again.');
       setIsLoading(false);
     }

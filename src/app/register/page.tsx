@@ -33,7 +33,7 @@ export default function Register() {
         setError(data.message);
         setIsLoading(false);
       }
-    } catch (_err) {
+    } catch {
       setError('An unexpected error occurred. Please try again.');
       setIsLoading(false);
     }
