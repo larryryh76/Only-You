@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OnlyFans Replica
 
-## Getting Started
+A full-stack replica of OnlyFans built with Next.js 15, Tailwind CSS, and MongoDB.
 
-First, run the development server:
+## Features
+- **Creator Profiles:** Unique usernames and gated content.
+- **Messaging:** Direct messaging between users and creators.
+- **Subscriptions:** Manual payment approval workflow (Cash App/Crypto).
+- **Admin Dashboard:** Manage creators, verify accounts, and oversee the platform.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Setup
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Environment Variables:**
+   Create a `.env.local` file in the root directory (one has been provided in this repo for your convenience) with the following content:
+   ```
+   MONGODB_URI=mongodb+srv://josepholanrewaju818_db_user:Iamolanrewaju@onlyfans.frjm5lq.mongodb.net/?appName=Onlyfans
+   NEXTAUTH_SECRET=a_random_secure_string_for_onlyfans_replica
+   NEXTAUTH_URL=http://localhost:3000
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. **Install Dependencies:**
+   ```bash
+   npm install
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **Run the Development Server:**
+   ```bash
+   npm run dev
+   ```
 
-## Learn More
+4. **Access the App:**
+   Open [http://localhost:3000](http://localhost:3000). The first user to register will automatically be assigned the **Admin** role.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+This project is ready for deployment on Vercel. Ensure you add the environment variables listed above in your Vercel project settings.
