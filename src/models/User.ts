@@ -11,7 +11,9 @@ const UserSchema = new mongoose.Schema({
   },
   username: { type: String, unique: true, sparse: true },
   isVerified: { type: Boolean, default: false },
+  subscriptionPrice: { type: Number, default: 0 },
   profileImage: { type: String },
+  coverImage: { type: String },
   bio: { type: String },
   displayFollowerCount: { type: Number, default: 0 },
   paymentDetails: {

@@ -6,6 +6,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import {
   Users,
+  User,
   CheckCircle,
   Clock,
   XCircle,
@@ -32,6 +33,11 @@ interface ICreator {
   name: string;
   username: string;
   isVerified: boolean;
+  subscriptionPrice?: number;
+  profileImage?: string;
+  coverImage?: string;
+  bio?: string;
+  displayFollowerCount?: number;
 }
 
 export default function Dashboard() {
@@ -41,6 +47,7 @@ export default function Dashboard() {
   const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]);
   const [creators, setCreators] = useState<ICreator[]>([]);
   const [newPostContent, setNewPostContent] = useState('');
+  const [newPostMedia, setNewPostMedia] = useState('');
   const [paymentDetails, setPaymentDetails] = useState({ cashapp: '', crypto: '' });
   const [showCreateCreator, setShowCreateCreator] = useState(false);
   const [newCreator, setNewCreator] = useState({
@@ -50,7 +57,14 @@ export default function Dashboard() {
     username: '',
     bio: '',
     displayFollowerCount: 0,
+    subscriptionPrice: 0,
+    profileImage: '',
+    coverImage: '',
+    isVerified: true,
   });
+
+  const [editingCreator, setEditingCreator] = useState<ICreator | null>(null);
+  const [creatorProfile, setCreatorProfile] = useState({ bio: '', profileImage: '', coverImage: '' });
 
   const fetchDashboardData = useCallback(async () => {
     const res = await fetch('/api/subscriptions');
@@ -67,6 +81,11 @@ export default function Dashboard() {
       const meRes = await fetch('/api/creators/me');
       const meData = await meRes.json();
       setPaymentDetails(meData.paymentDetails || { cashapp: '', crypto: '' });
+      setCreatorProfile({
+        bio: meData.bio || '',
+        profileImage: meData.profileImage || '',
+        coverImage: meData.coverImage || '',
+      });
     }
   }, [session]);
 
@@ -91,14 +110,29 @@ export default function Dashboard() {
     fetchDashboardData();
   };
 
-  const handleUpdatePayment = async (e: React.FormEvent) => {
+  const handleUpdateCreatorProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     const res = await fetch('/api/creators/me', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ paymentDetails }),
+      body: JSON.stringify({ ...creatorProfile, paymentDetails }),
     });
-    if (res.ok) alert('Payment details updated!');
+    if (res.ok) alert('Profile updated!');
+  };
+
+  const handleAdminUpdateCreator = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCreator) return;
+    const res = await fetch(`/api/creators/${editingCreator.username}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(editingCreator),
+    });
+    if (res.ok) {
+      setEditingCreator(null);
+      fetchDashboardData();
+      alert('Creator updated!');
+    }
   };
 
   const handleCreatePost = async (e: React.FormEvent) => {
@@ -106,10 +140,15 @@ export default function Dashboard() {
     const res = await fetch('/api/posts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content: newPostContent, isPremium: true }),
+      body: JSON.stringify({
+        content: newPostContent,
+        mediaUrl: newPostMedia,
+        isPremium: true
+      }),
     });
     if (res.ok) {
       setNewPostContent('');
+      setNewPostMedia('');
       alert('Post created!');
     }
   };
@@ -123,7 +162,11 @@ export default function Dashboard() {
     });
     if (res.ok) {
       setShowCreateCreator(false);
-      setNewCreator({ name: '', email: '', password: '', username: '', bio: '', displayFollowerCount: 0 });
+      setNewCreator({
+        name: '', email: '', password: '', username: '', bio: '',
+        displayFollowerCount: 0, subscriptionPrice: 0, profileImage: '',
+        coverImage: '', isVerified: true
+      });
       fetchDashboardData();
       alert('Creator created successfully!');
     } else {
@@ -160,9 +203,19 @@ export default function Dashboard() {
                   <textarea
                     value={newPostContent}
                     onChange={(e) => setNewPostContent(e.target.value)}
-                    className="w-full border-2 border-of-light rounded-3xl p-6 min-h-[160px] mb-6 focus:border-primary outline-none bg-of-light/30 font-medium transition-colors"
+                    className="w-full border-2 border-of-light rounded-3xl p-6 min-h-[120px] mb-4 focus:border-primary outline-none bg-of-light/30 font-medium transition-colors"
                     placeholder="Share something exclusive with your fans..."
                   ></textarea>
+                  <div className="mb-6">
+                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-2 ml-1">Media URL (Image/Video)</label>
+                    <input
+                      type="text"
+                      value={newPostMedia}
+                      onChange={(e) => setNewPostMedia(e.target.value)}
+                      className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
+                      placeholder="https://example.com/media.jpg"
+                    />
+                  </div>
                   <button className="bg-primary text-white px-10 py-4 rounded-full font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-lg shadow-primary/30">
                     Post to Subscribers
                   </button>
@@ -212,9 +265,38 @@ export default function Dashboard() {
             <div className="space-y-10">
               <section className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-of-light">
                 <h2 className="text-xl font-black text-of-dark mb-6 flex items-center gap-3 tracking-tight">
-                  <CreditCard className="text-primary" /> Payout Settings
+                  <User className="text-primary" /> Profile & Payout
                 </h2>
-                <form onSubmit={handleUpdatePayment} className="space-y-6">
+                <form onSubmit={handleUpdateCreatorProfile} className="space-y-6">
+                  <div>
+                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-2 ml-1">Profile Image URL</label>
+                    <input
+                      type="text"
+                      value={creatorProfile.profileImage}
+                      onChange={(e) => setCreatorProfile({ ...creatorProfile, profileImage: e.target.value })}
+                      className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
+                      placeholder="https://example.com/image.jpg"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-2 ml-1">Cover Image URL</label>
+                    <input
+                      type="text"
+                      value={creatorProfile.coverImage}
+                      onChange={(e) => setCreatorProfile({ ...creatorProfile, coverImage: e.target.value })}
+                      className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
+                      placeholder="https://example.com/cover.jpg"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-2 ml-1">Bio</label>
+                    <textarea
+                      value={creatorProfile.bio}
+                      onChange={(e) => setCreatorProfile({ ...creatorProfile, bio: e.target.value })}
+                      className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm min-h-[80px]"
+                      placeholder="Tell your fans about yourself..."
+                    />
+                  </div>
                   <div>
                     <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-2 ml-1">Cash App Tag</label>
                     <input
@@ -231,11 +313,11 @@ export default function Dashboard() {
                       type="text"
                       value={paymentDetails.crypto}
                       onChange={(e) => setPaymentDetails({ ...paymentDetails, crypto: e.target.value })}
-                      className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors"
+                      className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
                       placeholder="BTC/ETH Address"
                     />
                   </div>
-                  <button className="w-full bg-of-dark text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-black transition shadow-lg">Save Settings</button>
+                  <button className="w-full bg-primary text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-lg shadow-primary/30">Save Profile</button>
                 </form>
               </section>
 
@@ -437,6 +519,33 @@ export default function Dashboard() {
                          onChange={(e) => setNewCreator({ ...newCreator, displayFollowerCount: parseInt(e.target.value) })}
                        />
                     </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Subscription Price ($)</label>
+                       <input
+                         type="number"
+                         className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
+                         value={newCreator.subscriptionPrice}
+                         onChange={(e) => setNewCreator({ ...newCreator, subscriptionPrice: parseFloat(e.target.value) })}
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Profile Image URL</label>
+                       <input
+                         type="text"
+                         className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
+                         value={newCreator.profileImage}
+                         onChange={(e) => setNewCreator({ ...newCreator, profileImage: e.target.value })}
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Cover Image URL</label>
+                       <input
+                         type="text"
+                         className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
+                         value={newCreator.coverImage}
+                         onChange={(e) => setNewCreator({ ...newCreator, coverImage: e.target.value })}
+                       />
+                    </div>
                     <div className="md:col-span-2 flex gap-4 pt-4">
                       <button type="submit" className="bg-primary text-white px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-primary/30">Activate Account</button>
                       <button type="button" onClick={() => setShowCreateCreator(false)} className="bg-white text-of-gray px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-widest border border-of-light hover:bg-of-light transition">Cancel</button>
@@ -466,8 +575,13 @@ export default function Dashboard() {
                         </td>
                         <td className="py-6 text-right">
                           <div className="flex gap-4 justify-end items-center">
+                            <button
+                              onClick={() => setEditingCreator(creator)}
+                              className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline transition-colors"
+                            >
+                              Edit
+                            </button>
                             <Link href={`/${creator.username}`} className="text-[10px] font-black uppercase tracking-widest text-of-gray hover:text-primary transition-colors">View Page</Link>
-                            <button className="text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-600 transition-colors">Delete</button>
                           </div>
                         </td>
                       </tr>
@@ -476,6 +590,81 @@ export default function Dashboard() {
                 </table>
               </div>
             </section>
+
+            {/* Edit Creator Modal */}
+            {editingCreator && (
+              <div className="fixed inset-0 bg-of-dark/80 backdrop-blur-md flex items-center justify-center z-[110] p-6">
+                <div className="bg-white rounded-[2.5rem] p-10 max-w-2xl w-full shadow-2xl relative overflow-hidden max-h-[90vh] overflow-y-auto">
+                   <button
+                    onClick={() => setEditingCreator(null)}
+                    className="absolute right-6 top-6 text-of-gray hover:text-of-dark transition"
+                  >
+                    <XCircle size={28} />
+                  </button>
+                  <h2 className="text-3xl font-black text-of-dark mb-8 tracking-tight">Edit Creator: {editingCreator.name}</h2>
+
+                  <form onSubmit={handleAdminUpdateCreator} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest">Full Name</label>
+                       <input
+                         type="text"
+                         className="w-full p-4 border-2 border-of-light rounded-2xl focus:border-primary outline-none bg-of-light/30 font-bold"
+                         value={editingCreator.name}
+                         onChange={(e) => setEditingCreator({ ...editingCreator, name: e.target.value })}
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest">Subscription Price ($)</label>
+                       <input
+                         type="number"
+                         className="w-full p-4 border-2 border-of-light rounded-2xl focus:border-primary outline-none bg-of-light/30 font-bold"
+                         value={editingCreator.subscriptionPrice}
+                         onChange={(e) => setEditingCreator({ ...editingCreator, subscriptionPrice: parseFloat(e.target.value) })}
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest">Profile Image URL</label>
+                       <input
+                         type="text"
+                         className="w-full p-4 border-2 border-of-light rounded-2xl focus:border-primary outline-none bg-of-light/30 font-bold"
+                         value={editingCreator.profileImage}
+                         onChange={(e) => setEditingCreator({ ...editingCreator, profileImage: e.target.value })}
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest">Cover Image URL</label>
+                       <input
+                         type="text"
+                         className="w-full p-4 border-2 border-of-light rounded-2xl focus:border-primary outline-none bg-of-light/30 font-bold"
+                         value={editingCreator.coverImage}
+                         onChange={(e) => setEditingCreator({ ...editingCreator, coverImage: e.target.value })}
+                       />
+                    </div>
+                    <div className="md:col-span-2 space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest">Bio</label>
+                       <textarea
+                         className="w-full p-4 border-2 border-of-light rounded-2xl focus:border-primary outline-none bg-of-light/30 font-bold min-h-[100px]"
+                         value={editingCreator.bio}
+                         onChange={(e) => setEditingCreator({ ...editingCreator, bio: e.target.value })}
+                       />
+                    </div>
+                    <div className="flex items-center gap-4">
+                       <input
+                        type="checkbox"
+                        id="isVerified"
+                        checked={editingCreator.isVerified}
+                        onChange={(e) => setEditingCreator({ ...editingCreator, isVerified: e.target.checked })}
+                        className="w-6 h-6 accent-primary"
+                       />
+                       <label htmlFor="isVerified" className="text-sm font-black text-of-dark uppercase tracking-widest">Verified Creator</label>
+                    </div>
+                    <div className="md:col-span-2 pt-6">
+                      <button type="submit" className="w-full bg-primary text-white py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-primary/30 hover:bg-primary-hover transition">Save Changes</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </main>

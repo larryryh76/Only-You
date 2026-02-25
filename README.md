@@ -11,10 +11,10 @@ A full-stack replica of OnlyFans built with Next.js 15, Tailwind CSS, and MongoD
 ## Setup
 
 1. **Environment Variables:**
-   Create a `.env.local` file in the root directory (one has been provided in this repo for your convenience) with the following content:
+   Create a `.env.local` file in the root directory with the following content:
    ```
-   MONGODB_URI=mongodb+srv://josepholanrewaju818_db_user:Iamolanrewaju@onlyfans.frjm5lq.mongodb.net/?appName=Onlyfans
-   NEXTAUTH_SECRET=a_random_secure_string_for_onlyfans_replica
+   MONGODB_URI=your_mongodb_connection_string
+   NEXTAUTH_SECRET=a_random_secure_string
    NEXTAUTH_URL=http://localhost:3000
    ```
 

@@ -30,6 +30,7 @@ export async function PATCH(req: Request) {
       {
         bio: data.bio,
         profileImage: data.profileImage,
+        coverImage: data.coverImage,
         paymentDetails: data.paymentDetails
       },
       { new: true }
