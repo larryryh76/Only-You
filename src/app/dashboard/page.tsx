@@ -617,9 +617,19 @@ export default function Dashboard() {
                        <label className="text-[10px] font-black text-of-gray uppercase tracking-widest">Subscription Price ($)</label>
                        <input
                          type="number"
+                         step="0.01"
                          className="w-full p-4 border-2 border-of-light rounded-2xl focus:border-primary outline-none bg-of-light/30 font-bold"
                          value={editingCreator.subscriptionPrice}
                          onChange={(e) => setEditingCreator({ ...editingCreator, subscriptionPrice: parseFloat(e.target.value) })}
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest">Display Follower Count</label>
+                       <input
+                         type="number"
+                         className="w-full p-4 border-2 border-of-light rounded-2xl focus:border-primary outline-none bg-of-light/30 font-bold"
+                         value={editingCreator.displayFollowerCount || 0}
+                         onChange={(e) => setEditingCreator({ ...editingCreator, displayFollowerCount: parseInt(e.target.value) })}
                        />
                     </div>
                     <div className="space-y-2">
