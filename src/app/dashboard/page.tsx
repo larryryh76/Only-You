@@ -180,14 +180,24 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen">
       <main className="max-w-6xl mx-auto py-10 px-6">
-        <div className="flex items-center gap-4 mb-10">
-          <div className="bg-primary p-3 rounded-2xl shadow-lg shadow-primary/20">
-            <LayoutDashboard className="text-white" size={32} />
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+          <div className="flex items-center gap-4">
+            <div className="bg-primary p-3 rounded-2xl shadow-lg shadow-primary/20">
+              <LayoutDashboard className="text-white" size={32} />
+            </div>
+            <div>
+              <h1 className="text-4xl font-black text-of-dark tracking-tight uppercase">{role}</h1>
+              <p className="text-of-gray font-bold text-sm tracking-widest">CONTROL PANEL</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-4xl font-black text-of-dark tracking-tight uppercase">{role}</h1>
-            <p className="text-of-gray font-bold text-sm tracking-widest">CONTROL PANEL</p>
-          </div>
+          {role === 'creator' && session?.user?.username && (
+            <Link
+              href={`/${session.user.username}`}
+              className="bg-of-light text-primary px-6 py-3 rounded-full font-black uppercase text-xs tracking-widest hover:bg-white border border-primary/20 transition-all flex items-center gap-2"
+            >
+              <Eye size={18} /> View My Public Profile
+            </Link>
+          )}
         </div>
 
         {role === 'creator' && (
@@ -207,13 +217,14 @@ export default function Dashboard() {
                     placeholder="Share something exclusive with your fans..."
                   ></textarea>
                   <div className="mb-6">
-                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-2 ml-1">Media URL (Image/Video)</label>
+                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Media URL (Image or Video)</label>
+                    <p className="text-[10px] text-primary font-bold mb-2 ml-1 italic">Supports .jpg, .png, .gif, .mp4, etc.</p>
                     <input
                       type="text"
                       value={newPostMedia}
                       onChange={(e) => setNewPostMedia(e.target.value)}
                       className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
-                      placeholder="https://example.com/media.jpg"
+                      placeholder="Paste your image or video link here..."
                     />
                   </div>
                   <button className="bg-primary text-white px-10 py-4 rounded-full font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-lg shadow-primary/30">
@@ -269,23 +280,25 @@ export default function Dashboard() {
                 </h2>
                 <form onSubmit={handleUpdateCreatorProfile} className="space-y-6">
                   <div>
-                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-2 ml-1">Profile Image URL</label>
+                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Profile Image URL</label>
+                    <p className="text-[9px] text-of-gray font-bold mb-2 ml-1 italic">Best size: 400x400px</p>
                     <input
                       type="text"
                       value={creatorProfile.profileImage}
                       onChange={(e) => setCreatorProfile({ ...creatorProfile, profileImage: e.target.value })}
                       className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
-                      placeholder="https://example.com/image.jpg"
+                      placeholder="https://example.com/photo.jpg"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-2 ml-1">Cover Image URL</label>
+                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Cover Image URL</label>
+                    <p className="text-[9px] text-of-gray font-bold mb-2 ml-1 italic">Best size: 1200x400px</p>
                     <input
                       type="text"
                       value={creatorProfile.coverImage}
                       onChange={(e) => setCreatorProfile({ ...creatorProfile, coverImage: e.target.value })}
                       className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
-                      placeholder="https://example.com/cover.jpg"
+                      placeholder="https://example.com/banner.jpg"
                     />
                   </div>
                   <div>
