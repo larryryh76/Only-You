@@ -54,6 +54,15 @@ export default function CreatorProfile() {
   const [subStatus, setSubStatus] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('posts');
 
+  const handleShare = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      alert('Profile link copied to clipboard!');
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+    });
+  };
+
   useEffect(() => {
     if (!username) return;
 
@@ -139,7 +148,11 @@ export default function CreatorProfile() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-           <button className="p-2 hover:bg-gray-100 rounded-full transition">
+           <button
+              onClick={handleShare}
+              className="p-2 hover:bg-gray-100 rounded-full transition"
+              title="Share Profile"
+           >
               <Share2 size={22} className="text-of-dark" />
            </button>
            <button className="p-2 hover:bg-gray-100 rounded-full transition">
@@ -189,7 +202,11 @@ export default function CreatorProfile() {
               >
                 <MessageCircle size={22} className="text-of-dark" />
              </button>
-             <button className="p-2 border border-gray-200 rounded-full hover:bg-gray-50 transition">
+             <button
+                onClick={handleShare}
+                className="p-2 border border-gray-200 rounded-full hover:bg-gray-50 transition"
+                title="Share Profile"
+              >
                 <Share2 size={22} className="text-of-dark" />
              </button>
           </div>
@@ -267,28 +284,69 @@ export default function CreatorProfile() {
         </div>
 
         {/* Content Area */}
-        <div className="py-8 text-center flex flex-col items-center">
-          <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
-             <Lock size={32} className="text-gray-300" />
-          </div>
-
-          <div className="border border-gray-100 rounded-xl p-6 w-full max-w-sm bg-gray-50/50">
-             <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-2 text-of-gray">
-                   <FileText size={18} />
-                   <span className="text-sm font-bold">{posts.length}</span>
+        {subStatus === 'active' || (session && session.user.id === creator._id) || (session && session.user.role === 'admin') ? (
+          <div className="py-6 space-y-6">
+            {posts.map((post) => (
+              <div key={post._id} className="border-b border-gray-100 pb-6">
+                <div className="flex items-center gap-3 px-4 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden relative">
+                    {creator.profileImage ? (
+                      <Image src={creator.profileImage} alt="" fill className="object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-primary text-white font-bold">{creator.name[0]}</div>
+                    )}
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm">{creator.name}</p>
+                    <p className="text-of-gray text-xs">{new Date(post.createdAt).toLocaleDateString()}</p>
+                  </div>
                 </div>
-                <Lock size={18} className="text-of-gray" />
-             </div>
 
-             <button
-                onClick={handleSubscribeClick}
-                className="w-full bg-primary text-white py-4 rounded-full font-bold text-sm uppercase tracking-wider hover:bg-primary-hover transition"
-             >
-                SUBSCRIBE TO SEE USER&apos;S POSTS
-             </button>
+                <div className="px-4 mb-4 whitespace-pre-wrap text-of-dark">
+                  {post.content}
+                </div>
+
+                {post.mediaUrl && (
+                  <div className="px-4">
+                    <div className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden">
+                      {post.mediaUrl.match(/\.(mp4|webm|ogg)$/i) ? (
+                        <video src={post.mediaUrl} controls className="w-full h-full object-cover" />
+                      ) : (
+                        <Image src={post.mediaUrl} alt="" fill className="object-cover" />
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+            {posts.length === 0 && (
+              <div className="text-center py-20 text-of-gray font-bold">No posts yet.</div>
+            )}
           </div>
-        </div>
+        ) : (
+          <div className="py-8 text-center flex flex-col items-center">
+            <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
+               <Lock size={32} className="text-gray-300" />
+            </div>
+
+            <div className="border border-gray-100 rounded-xl p-6 w-full max-w-sm bg-gray-50/50">
+               <div className="flex justify-between items-center mb-6">
+                  <div className="flex items-center gap-2 text-of-gray">
+                     <FileText size={18} />
+                     <span className="text-sm font-bold">{posts.length}</span>
+                  </div>
+                  <Lock size={18} className="text-of-gray" />
+               </div>
+
+               <button
+                  onClick={handleSubscribeClick}
+                  className="w-full bg-primary text-white py-4 rounded-full font-bold text-sm uppercase tracking-wider hover:bg-primary-hover transition"
+               >
+                  SUBSCRIBE TO SEE USER&apos;S POSTS
+               </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Subscription Modal */}

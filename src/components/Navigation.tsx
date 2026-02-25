@@ -23,8 +23,11 @@ export default function Navigation() {
   const navItems = [
     { label: 'Home', href: '/', icon: Home },
     { label: 'Messages', href: '/messages', icon: MessageSquare },
-    { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   ];
+
+  if (session) {
+    navItems.push({ label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard });
+  }
 
   if (session?.user?.role === 'creator') {
     navItems.push({ label: 'Profile', href: `/${session.user.username}`, icon: User });
@@ -84,10 +87,13 @@ export default function Navigation() {
         )}
 
         {!session && (
-          <div className="mt-auto space-y-2">
-             <Link href="/login" className="flex items-center gap-4 px-4 py-3 rounded-full text-primary border border-primary font-bold justify-center">
-                <span className="hidden xl:inline">Login</span>
-                <span className="xl:hidden">L</span>
+          <div className="mt-auto space-y-4 pt-6 border-t border-of-light">
+             <Link
+              href="/login"
+              className="w-full flex items-center gap-4 px-4 py-3 rounded-full bg-primary text-white font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition-all shadow-lg shadow-primary/20 justify-center"
+             >
+                <span className="hidden xl:inline">Login / Sign Up</span>
+                <span className="xl:hidden">Login</span>
              </Link>
           </div>
         )}
