@@ -6,12 +6,12 @@ import { useSession } from 'next-auth/react';
 import {
   CheckCircle2,
   Lock,
-  MessageCircle,
   X,
   Share2,
   MoreHorizontal,
   ArrowLeft,
-  FileText
+  FileText,
+  Star
 } from 'lucide-react';
 import Image from 'next/image';
 import { formatCompactNumber } from '@/lib/formatters';
@@ -177,9 +177,9 @@ export default function CreatorProfile() {
 
       {/* Profile Info */}
       <div className="px-4 relative">
-        <div className="flex justify-between items-end -mt-12 mb-4">
+        <div className="flex justify-between items-start -mt-16 mb-4">
           <div className="relative">
-            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white bg-gray-100 overflow-hidden relative">
+            <div className="w-32 h-32 rounded-full border-4 border-white bg-gray-100 overflow-hidden relative shadow-sm">
               {creator.profileImage ? (
                 <Image
                   src={creator.profileImage}
@@ -188,82 +188,73 @@ export default function CreatorProfile() {
                   className="object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-primary text-white text-3xl font-bold">
+                <div className="w-full h-full flex items-center justify-center bg-primary text-white text-4xl font-bold">
                   {creator.name[0]}
                 </div>
               )}
             </div>
-            <div className="absolute bottom-2 right-2 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+            <div className="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-4 border-white rounded-full"></div>
           </div>
-          <div className="flex gap-2 mb-2">
+          <div className="flex gap-3 mt-16">
              <button
-                onClick={() => router.push(`/messages?userId=${creator._id}`)}
-                className="p-2 border border-gray-200 rounded-full hover:bg-gray-50 transition"
+                className="p-2.5 border border-primary/20 rounded-full hover:bg-gray-50 transition group"
               >
-                <MessageCircle size={22} className="text-of-dark" />
+                <Star size={24} className="text-primary group-hover:fill-primary/10" />
              </button>
              <button
                 onClick={handleShare}
-                className="p-2 border border-gray-200 rounded-full hover:bg-gray-50 transition"
+                className="p-2.5 border border-primary/20 rounded-full hover:bg-gray-50 transition group"
                 title="Share Profile"
               >
-                <Share2 size={22} className="text-of-dark" />
+                <Share2 size={24} className="text-primary group-hover:fill-primary/10" />
              </button>
           </div>
         </div>
 
-        <div className="mb-6">
+        <div className="mb-4">
           <div className="flex items-center gap-1.5">
-            <h1 className="text-xl font-bold text-of-dark">{creator.name}</h1>
-            {creator.isVerified && <CheckCircle2 size={20} className="text-primary fill-primary text-white" />}
+            <h1 className="text-xl font-bold text-of-dark">🦋 🌸 {creator.name}</h1>
+            {creator.isVerified && <CheckCircle2 size={20} className="text-of-dark" />}
           </div>
-          <div className="flex items-center gap-1 text-of-gray text-sm">
+          <div className="flex items-center gap-1 text-of-gray text-[15px]">
             <span>@{creator.username}</span>
-            {creator.displayFollowerCount !== undefined && creator.displayFollowerCount > 0 && (
-              <>
-                <span>•</span>
-                <span>{formatCompactNumber(creator.displayFollowerCount)} fans</span>
-              </>
-            )}
             <span>•</span>
             <span>Available now</span>
           </div>
         </div>
 
-        <div className="text-of-dark text-[15px] whitespace-pre-wrap mb-6 leading-relaxed">
-          {creator.bio || 'Welcome to my profile!'}
+        <div className="text-of-dark text-[17px] mb-6">
+          {creator.bio || '🐒'}
         </div>
 
         {/* Subscription Card */}
-        <div className="border border-gray-100 rounded-xl p-4 mb-6 bg-white shadow-sm">
-          <p className="text-xs font-bold text-of-gray uppercase tracking-wider mb-4">Subscription</p>
+        <div className="border-y border-gray-100 -mx-4 px-4 py-5 mb-6 bg-white">
+          <p className="text-[13px] font-bold text-of-gray uppercase tracking-tight mb-4">Subscription</p>
 
           <div className="space-y-4">
              {/* Promotional Offer (Hardcoded for UI match) */}
-             <div className="bg-gray-50 rounded-lg p-3">
-                <p className="font-bold text-[15px]">Limited offer - 35% off for 28 days!</p>
-             </div>
+             <p className="font-bold text-[17px] text-of-dark">Limited offer - 35% off for 28 days!</p>
 
              {subStatus === 'active' ? (
-                <button disabled className="w-full bg-green-500 text-white py-3 rounded-full font-bold flex justify-between px-6 items-center">
+                <button disabled className="w-full bg-green-500 text-white py-3.5 rounded-full font-bold flex justify-between px-8 items-center text-sm uppercase tracking-wider">
                    <span>SUBSCRIBED</span>
                    <span>ACTIVE</span>
                 </button>
              ) : subStatus === 'pending' ? (
-                <button disabled className="w-full bg-orange-400 text-white py-3 rounded-full font-bold flex justify-between px-6 items-center">
+                <button disabled className="w-full bg-orange-400 text-white py-3.5 rounded-full font-bold flex justify-between px-8 items-center text-sm uppercase tracking-wider">
                    <span>PENDING APPROVAL</span>
                    <span>WAITING</span>
                 </button>
              ) : (
                 <button
                   onClick={handleSubscribeClick}
-                  className="w-full bg-primary text-white py-3 rounded-full font-bold flex justify-between px-6 items-center hover:bg-primary-hover transition"
+                  className="w-full bg-primary text-white py-4 rounded-full font-bold flex justify-between px-8 items-center hover:bg-primary-hover transition text-sm uppercase tracking-wider"
                 >
                    <span>SUBSCRIBE</span>
-                   <span>${(creator.subscriptionPrice || 0).toFixed(2)} for 30 days</span>
+                   <span>${((creator.subscriptionPrice || 4.99) * 0.65).toFixed(2)} for 28 days</span>
                 </button>
              )}
-             <p className="text-of-gray text-xs px-2 italic">Regular price ${(creator.subscriptionPrice || 0).toFixed(2)} /month</p>
+             <p className="text-of-gray text-[15px]">Regular price ${(creator.subscriptionPrice || 4.99).toFixed(2)} /month</p>
           </div>
         </div>
 
@@ -289,7 +280,7 @@ export default function CreatorProfile() {
             {posts.map((post) => (
               <div key={post._id} className="border-b border-gray-100 pb-6">
                 <div className="flex items-center gap-3 px-4 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden relative">
+                  <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden relative border border-gray-100">
                     {creator.profileImage ? (
                       <Image src={creator.profileImage} alt="" fill className="object-cover" />
                     ) : (
@@ -308,7 +299,7 @@ export default function CreatorProfile() {
 
                 {post.mediaUrl && (
                   <div className="px-4">
-                    <div className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden">
+                    <div className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden shadow-inner">
                       {post.mediaUrl.match(/\.(mp4|webm|ogg)$/i) ? (
                         <video src={post.mediaUrl} controls className="w-full h-full object-cover" />
                       ) : (
@@ -325,22 +316,22 @@ export default function CreatorProfile() {
           </div>
         ) : (
           <div className="py-8 text-center flex flex-col items-center">
-            <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
-               <Lock size={32} className="text-gray-300" />
+            <div className="text-gray-200 mb-8">
+               <Lock size={120} strokeWidth={1} />
             </div>
 
-            <div className="border border-gray-100 rounded-xl p-6 w-full max-w-sm bg-gray-50/50">
-               <div className="flex justify-between items-center mb-6">
+            <div className="border border-gray-100 rounded-xl p-4 w-full bg-white shadow-sm">
+               <div className="flex justify-between items-center mb-6 px-2">
                   <div className="flex items-center gap-2 text-of-gray">
-                     <FileText size={18} />
-                     <span className="text-sm font-bold">{posts.length}</span>
+                     <FileText size={20} />
+                     <span className="text-[17px] font-medium">{posts.length}</span>
                   </div>
-                  <Lock size={18} className="text-of-gray" />
+                  <Lock size={20} className="text-of-gray" />
                </div>
 
                <button
                   onClick={handleSubscribeClick}
-                  className="w-full bg-primary text-white py-4 rounded-full font-bold text-sm uppercase tracking-wider hover:bg-primary-hover transition"
+                  className="w-full bg-primary text-white py-4 rounded-full font-bold text-[13px] uppercase tracking-wider hover:bg-primary-hover transition"
                >
                   SUBSCRIBE TO SEE USER&apos;S POSTS
                </button>
