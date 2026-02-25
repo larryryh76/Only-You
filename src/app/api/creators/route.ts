@@ -11,7 +11,7 @@ export async function GET() {
   await dbConnect();
   try {
     const creators = await User.find({ role: 'creator', isVerified: true })
-      .select('name username profileImage bio displayFollowerCount');
+      .select('name username profileImage coverImage bio displayFollowerCount subscriptionPrice isVerified');
     return NextResponse.json(creators);
   } catch (error) {
     return NextResponse.json({ message: error instanceof Error ? error.message : "Unknown error" }, { status: 500 });
@@ -27,7 +27,18 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { name, email, password, username, bio, displayFollowerCount } = body;
+    const {
+      name,
+      email,
+      password,
+      username,
+      bio,
+      displayFollowerCount,
+      subscriptionPrice,
+      isVerified,
+      profileImage,
+      coverImage
+    } = body;
 
     if (!name || !email || !password || !username) {
       return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
@@ -49,8 +60,11 @@ export async function POST(req: Request) {
       role: 'creator',
       username,
       bio,
-      displayFollowerCount,
-      isVerified: true,
+      displayFollowerCount: displayFollowerCount || 0,
+      subscriptionPrice: subscriptionPrice || 0,
+      isVerified: isVerified ?? true,
+      profileImage,
+      coverImage,
     });
 
     return NextResponse.json({ message: 'Creator created successfully', creatorId: creator._id }, { status: 201 });

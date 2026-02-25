@@ -48,6 +48,15 @@ function MessagesContent() {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [creatorPaymentDetails, setCreatorPaymentDetails] = useState<IPaymentDetails | null>(null);
+  const [showMobileChat, setShowMobileChat] = useState(false);
+
+  useEffect(() => {
+    if (targetUserId || (adminUserId1 && adminUserId2)) {
+      setShowMobileChat(true);
+    } else {
+      setShowMobileChat(false);
+    }
+  }, [targetUserId, adminUserId1, adminUserId2]);
 
   const fetchConversations = useCallback(async () => {
     try {
@@ -126,9 +135,9 @@ function MessagesContent() {
   const isAdmin = session?.user?.role === 'admin';
 
   return (
-    <main className="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 flex gap-6 overflow-hidden h-[calc(100vh-80px)]">
+    <main className="flex-1 max-w-6xl w-full mx-auto p-0 md:p-6 flex gap-6 overflow-hidden h-[calc(100vh-80px)]">
       {/* Conversation List */}
-      <div className="w-1/3 bg-white rounded-[2rem] shadow-sm border border-gray-100 flex flex-col overflow-hidden">
+      <div className={`${showMobileChat ? 'hidden md:flex' : 'flex'} w-full md:w-1/3 bg-white md:rounded-[2rem] shadow-sm border border-gray-100 flex flex-col overflow-hidden`}>
         <div className="p-6 border-b border-gray-100 flex items-center gap-2">
           <MessageSquare className="text-primary" size={24} />
           <h2 className="text-xl font-black text-gray-900">Messages</h2>
@@ -179,7 +188,20 @@ function MessagesContent() {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 flex flex-col bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+      <div className={`${showMobileChat ? 'flex' : 'hidden md:flex'} flex-1 flex flex-col bg-white md:rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden`}>
+        {showMobileChat && (
+          <div className="md:hidden p-4 border-b border-gray-100 flex items-center bg-white">
+            <button
+              onClick={() => {
+                setShowMobileChat(false);
+                router.push('/messages');
+              }}
+              className="mr-4 text-primary font-bold"
+            >
+              ← Back
+            </button>
+          </div>
+        )}
         {(!targetUserId && !(adminUserId1 && adminUserId2)) ? (
           <div className="flex-1 flex flex-col items-center justify-center text-gray-400 gap-4">
             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center">

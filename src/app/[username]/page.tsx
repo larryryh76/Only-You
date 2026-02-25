@@ -24,6 +24,9 @@ interface Creator {
   profileImage?: string;
   bio?: string;
   displayFollowerCount?: number;
+  subscriptionPrice?: number;
+  coverImage?: string;
+  isVerified?: boolean;
   paymentDetails?: {
     cashapp?: string;
     crypto?: string;
@@ -100,12 +103,23 @@ export default function CreatorProfile() {
   return (
     <div className="min-h-screen">
       <div className="max-w-4xl mx-auto py-8 px-6">
-        {/* Cover Image Placeholder */}
-        <div className="h-56 bg-gradient-to-br from-primary to-primary-hover rounded-t-3xl shadow-inner"></div>
+        {/* Cover Image */}
+        <div className="h-56 md:h-80 bg-of-light rounded-t-3xl shadow-inner relative overflow-hidden">
+          {creator.coverImage ? (
+            <Image
+              src={creator.coverImage}
+              alt=""
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-primary to-primary-hover"></div>
+          )}
+        </div>
 
-        <div className="bg-white p-8 rounded-b-3xl shadow-xl border border-gray-100 -mt-12 relative z-10">
-          <div className="flex justify-between items-end mb-8">
-            <div className="w-36 h-36 bg-gray-100 border-8 border-white rounded-full overflow-hidden shadow-2xl transform transition-transform hover:scale-105">
+        <div className="bg-white p-6 md:p-8 rounded-b-3xl shadow-xl border border-gray-100 -mt-12 relative z-10">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6">
+            <div className="w-32 h-32 md:w-36 md:h-36 bg-gray-100 border-8 border-white rounded-full overflow-hidden shadow-2xl transform transition-transform hover:scale-105">
               {creator.profileImage ? (
                 <Image
                   src={creator.profileImage}
@@ -120,7 +134,7 @@ export default function CreatorProfile() {
                 </div>
               )}
             </div>
-            <div className="flex gap-4 mb-4">
+            <div className="flex gap-3 md:gap-4 w-full md:w-auto">
               <Link
                 href={`/messages?userId=${creator._id}`}
                 className="p-3.5 rounded-full border border-of-light hover:bg-of-light text-of-gray hover:text-primary transition shadow-md"
@@ -129,17 +143,17 @@ export default function CreatorProfile() {
               </Link>
 
               {subStatus === 'active' ? (
-                <button disabled className="bg-green-500 text-white px-10 py-3.5 rounded-full font-black uppercase text-xs tracking-widest opacity-90 cursor-default shadow-lg shadow-green-100">
+                <button disabled className="flex-1 md:flex-none bg-green-500 text-white px-6 md:px-10 py-3.5 rounded-full font-black uppercase text-xs tracking-widest opacity-90 cursor-default shadow-lg shadow-green-100">
                   Subscribed
                 </button>
               ) : subStatus === 'pending' ? (
-                <button disabled className="bg-orange-400 text-white px-10 py-3.5 rounded-full font-black uppercase text-xs tracking-widest opacity-90 cursor-default shadow-lg shadow-orange-100">
+                <button disabled className="flex-1 md:flex-none bg-orange-400 text-white px-6 md:px-10 py-3.5 rounded-full font-black uppercase text-xs tracking-widest opacity-90 cursor-default shadow-lg shadow-orange-100">
                   Pending Approval
                 </button>
               ) : (
                 <button
                   onClick={() => session ? setShowSubModal(true) : router.push('/login')}
-                  className="bg-primary text-white px-10 py-3.5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-xl shadow-primary/30"
+                  className="flex-1 md:flex-none bg-primary text-white px-6 md:px-10 py-3.5 rounded-full font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-xl shadow-primary/30"
                 >
                   Subscribe
                 </button>
@@ -149,7 +163,7 @@ export default function CreatorProfile() {
 
           <div className="flex items-center gap-2 mb-1">
             <h1 className="text-4xl font-black text-of-dark tracking-tight">{creator.name}</h1>
-            <CheckCircle className="text-primary fill-current" size={28} />
+            {creator.isVerified && <CheckCircle className="text-primary fill-current" size={28} />}
           </div>
           <p className="text-of-gray font-black mb-6 italic">@{creator.username}</p>
           <p className="text-of-dark/80 max-w-2xl mb-8 leading-relaxed font-medium">
@@ -181,6 +195,11 @@ export default function CreatorProfile() {
               </button>
 
               <h2 className="text-3xl font-black text-of-dark mb-2 tracking-tight">Support {creator.name}</h2>
+              <div className="mb-8 p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                <p className="text-center font-black text-primary text-2xl uppercase tracking-widest">
+                  ${creator.subscriptionPrice || 0} / month
+                </p>
+              </div>
               <p className="text-of-gray mb-10 font-medium">Choose your payment method to get instant access.</p>
 
               <div className="space-y-4 mb-10">
@@ -260,32 +279,38 @@ export default function CreatorProfile() {
               </div>
 
               {post.isLocked ? (
-                <div className="relative rounded-[2rem] overflow-hidden border border-of-light aspect-video group">
-                  {/* Blurred Background Preview */}
-                  <div className="absolute inset-0 bg-gray-200">
-                    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-of-dark/20 blur-3xl opacity-50 scale-110"></div>
+                <div className="relative rounded-[2rem] overflow-hidden border border-of-light min-h-[400px] flex items-center justify-center group">
+                  {/* Blurred Content Preview */}
+                  <div className="absolute inset-0 bg-gray-100">
+                     <div className="absolute inset-0 bg-gradient-to-br from-of-dark to-primary opacity-20"></div>
+                     <div className="absolute inset-0 flex items-center justify-center opacity-5">
+                        <Image
+                          src="/logo.jpg"
+                          alt=""
+                          width={400}
+                          height={100}
+                          className="grayscale brightness-0"
+                        />
+                     </div>
                   </div>
 
-                  {/* Subtle Pattern overlay */}
-                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-
-                  {/* Dark Glass Overlay */}
-                  <div className="absolute inset-0 bg-black/40 backdrop-blur-[20px] transition-all duration-500 group-hover:bg-black/50"></div>
+                  {/* Glassmorphism Overlay */}
+                  <div className="absolute inset-0 bg-white/30 backdrop-blur-[60px] z-10"></div>
 
                   {/* Content Overlay */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 z-10">
-                    <div className="bg-white/10 backdrop-blur-md p-6 rounded-full mb-6 border border-white/20 shadow-2xl transform transition-transform duration-500 group-hover:scale-110">
-                      <Lock size={48} className="text-white" />
+                  <div className="relative flex flex-col items-center justify-center text-center p-12 z-20">
+                    <div className="bg-white p-8 rounded-full mb-8 shadow-2xl transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-12">
+                      <Lock size={64} className="text-primary" />
                     </div>
-                    <p className="font-black text-white text-3xl mb-3 tracking-tight shadow-sm uppercase">Exclusive Content</p>
-                    <p className="font-bold text-white/80 max-w-xs leading-snug drop-shadow-md">
-                      Subscribe to unlock {creator.name}&apos;s secret posts and media
+                    <h3 className="font-black text-of-dark text-4xl mb-4 tracking-tighter uppercase">Subscribe to See Content</h3>
+                    <p className="font-bold text-of-gray max-w-sm leading-relaxed mb-10 text-lg italic">
+                      Join {creator.name}&apos;s exclusive club to unlock this post and {posts.length} other items.
                     </p>
                     <button
                        onClick={() => session ? setShowSubModal(true) : router.push('/login')}
-                       className="mt-8 bg-primary text-white px-8 py-3 rounded-full font-black uppercase text-xs tracking-widest hover:scale-105 transition-transform shadow-xl"
+                       className="bg-primary text-white px-12 py-5 rounded-full font-black uppercase text-sm tracking-widest hover:bg-primary-hover transition-all shadow-2xl shadow-primary/40 transform hover:-translate-y-1"
                     >
-                      Unlock Now
+                      Unlock for ${creator.subscriptionPrice || 0}
                     </button>
                   </div>
                 </div>
