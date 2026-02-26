@@ -230,7 +230,9 @@ export default function Dashboard() {
                   ></textarea>
                   <div className="mb-6">
                     <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Media URL (Image or Video)</label>
-                    <p className="text-[10px] text-primary font-bold mb-2 ml-1 italic">Enter a direct link to your image (JPG, PNG) or video (MP4). HD quality recommended.</p>
+                    <p className="text-[10px] text-primary font-bold mb-2 ml-1 italic">
+                      To use media from your gallery or files: Upload to a hosting service (e.g., Imgur, PostImages, or Google Drive) and paste the <strong>Direct Link</strong> here. Supports JPG, PNG, and MP4.
+                    </p>
                     <input
                       type="text"
                       value={newPostMedia}
@@ -293,7 +295,7 @@ export default function Dashboard() {
                 <form onSubmit={handleUpdateCreatorProfile} className="space-y-6">
                   <div>
                     <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Profile Image URL</label>
-                    <p className="text-[9px] text-of-gray font-bold mb-2 ml-1 italic">Best size: 400x400px (1:1 aspect ratio). Direct image link only.</p>
+                    <p className="text-[9px] text-of-gray font-bold mb-2 ml-1 italic">To use from gallery/files: Upload to a host and paste the direct link. Best size: 400x400px.</p>
                     <input
                       type="text"
                       value={creatorProfile.profileImage}
@@ -304,7 +306,7 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Cover Image URL</label>
-                    <p className="text-[9px] text-of-gray font-bold mb-2 ml-1 italic">Best size: 1200x400px (3:1 aspect ratio). Direct image link only.</p>
+                    <p className="text-[9px] text-of-gray font-bold mb-2 ml-1 italic">To use from gallery/files: Upload to a host and paste the direct link. Best size: 1200x400px.</p>
                     <input
                       type="text"
                       value={creatorProfile.coverImage}
@@ -555,7 +557,7 @@ export default function Dashboard() {
                     </div>
                     <div className="space-y-2">
                        <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Profile Image URL</label>
-                       <p className="text-[9px] text-of-gray font-bold mb-1 ml-1 italic">400x400px recommended</p>
+                       <p className="text-[9px] text-of-gray font-bold mb-1 ml-1 italic">To use from gallery/files: Upload to a host and paste link. (400x400px recommended)</p>
                        <input
                          type="text"
                          className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
@@ -565,7 +567,7 @@ export default function Dashboard() {
                     </div>
                     <div className="space-y-2">
                        <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Cover Image URL</label>
-                       <p className="text-[9px] text-of-gray font-bold mb-1 ml-1 italic">1200x400px recommended</p>
+                       <p className="text-[9px] text-of-gray font-bold mb-1 ml-1 italic">To use from gallery/files: Upload to a host and paste link. (1200x400px recommended)</p>
                        <input
                          type="text"
                          className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
