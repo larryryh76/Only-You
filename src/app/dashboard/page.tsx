@@ -191,12 +191,24 @@ export default function Dashboard() {
             </div>
           </div>
           {role === 'creator' && session?.user?.username && (
-            <Link
-              href={`/${session.user.username}`}
-              className="bg-of-light text-primary px-6 py-3 rounded-full font-black uppercase text-xs tracking-widest hover:bg-white border border-primary/20 transition-all flex items-center gap-2"
-            >
-              <Eye size={18} /> View My Public Profile
-            </Link>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => {
+                  const url = `${window.location.origin}/${session.user.username}`;
+                  navigator.clipboard.writeText(url);
+                  alert('Profile link copied to clipboard!');
+                }}
+                className="bg-primary text-white px-6 py-3 rounded-full font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+              >
+                Copy Profile Link
+              </button>
+              <Link
+                href={`/${session.user.username}`}
+                className="bg-of-light text-primary px-6 py-3 rounded-full font-black uppercase text-xs tracking-widest hover:bg-white border border-primary/20 transition-all flex items-center gap-2"
+              >
+                <Eye size={18} /> View My Public Profile
+              </Link>
+            </div>
           )}
         </div>
 
@@ -218,13 +230,13 @@ export default function Dashboard() {
                   ></textarea>
                   <div className="mb-6">
                     <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Media URL (Image or Video)</label>
-                    <p className="text-[10px] text-primary font-bold mb-2 ml-1 italic">Supports .jpg, .png, .gif, .mp4, etc.</p>
+                    <p className="text-[10px] text-primary font-bold mb-2 ml-1 italic">Enter a direct link to your image (JPG, PNG) or video (MP4). HD quality recommended.</p>
                     <input
                       type="text"
                       value={newPostMedia}
                       onChange={(e) => setNewPostMedia(e.target.value)}
                       className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
-                      placeholder="Paste your image or video link here..."
+                      placeholder="e.g., https://example.com/video.mp4"
                     />
                   </div>
                   <button className="bg-primary text-white px-10 py-4 rounded-full font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-lg shadow-primary/30">
@@ -281,24 +293,24 @@ export default function Dashboard() {
                 <form onSubmit={handleUpdateCreatorProfile} className="space-y-6">
                   <div>
                     <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Profile Image URL</label>
-                    <p className="text-[9px] text-of-gray font-bold mb-2 ml-1 italic">Best size: 400x400px</p>
+                    <p className="text-[9px] text-of-gray font-bold mb-2 ml-1 italic">Best size: 400x400px (1:1 aspect ratio). Direct image link only.</p>
                     <input
                       type="text"
                       value={creatorProfile.profileImage}
                       onChange={(e) => setCreatorProfile({ ...creatorProfile, profileImage: e.target.value })}
                       className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
-                      placeholder="https://example.com/photo.jpg"
+                      placeholder="e.g., https://example.com/profile.jpg"
                     />
                   </div>
                   <div>
                     <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Cover Image URL</label>
-                    <p className="text-[9px] text-of-gray font-bold mb-2 ml-1 italic">Best size: 1200x400px</p>
+                    <p className="text-[9px] text-of-gray font-bold mb-2 ml-1 italic">Best size: 1200x400px (3:1 aspect ratio). Direct image link only.</p>
                     <input
                       type="text"
                       value={creatorProfile.coverImage}
                       onChange={(e) => setCreatorProfile({ ...creatorProfile, coverImage: e.target.value })}
                       className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
-                      placeholder="https://example.com/banner.jpg"
+                      placeholder="e.g., https://example.com/cover.jpg"
                     />
                   </div>
                   <div>
@@ -543,6 +555,7 @@ export default function Dashboard() {
                     </div>
                     <div className="space-y-2">
                        <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Profile Image URL</label>
+                       <p className="text-[9px] text-of-gray font-bold mb-1 ml-1 italic">400x400px recommended</p>
                        <input
                          type="text"
                          className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
@@ -552,6 +565,7 @@ export default function Dashboard() {
                     </div>
                     <div className="space-y-2">
                        <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Cover Image URL</label>
+                       <p className="text-[9px] text-of-gray font-bold mb-1 ml-1 italic">1200x400px recommended</p>
                        <input
                          type="text"
                          className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
