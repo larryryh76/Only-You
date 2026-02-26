@@ -14,6 +14,7 @@ import {
   PlusSquare,
   Eye,
   MessageSquare,
+  Image as ImageIcon,
   LayoutDashboard,
   LogOut
 } from 'lucide-react';
@@ -111,6 +112,31 @@ export default function Dashboard() {
       }),
     });
     fetchDashboardData();
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'profileImage' | 'coverImage' | 'newPostMedia') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.url) {
+        if (field === 'newPostMedia') {
+          setNewPostMedia(data.url);
+        } else {
+          setCreatorProfile({ ...creatorProfile, [field]: data.url });
+        }
+      }
+    } catch (err) {
+      console.error('Upload failed', err);
+    }
   };
 
   const handleUpdateCreatorProfile = async (e: React.FormEvent) => {
@@ -245,17 +271,23 @@ export default function Dashboard() {
                     placeholder="Share something exclusive with your fans..."
                   ></textarea>
                   <div className="mb-6">
-                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Media URL (Image or Video)</label>
-                    <p className="text-[10px] text-primary font-bold mb-2 ml-1 italic">
-                      To use media from your gallery or files: Upload to a hosting service (e.g., Imgur, PostImages, or Google Drive) and paste the <strong>Direct Link</strong> here. Supports JPG, PNG, and MP4.
-                    </p>
-                    <input
-                      type="text"
-                      value={newPostMedia}
-                      onChange={(e) => setNewPostMedia(e.target.value)}
-                      className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
-                      placeholder="e.g., https://example.com/video.mp4"
-                    />
+                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Upload Media from Gallery</label>
+                    <div className="mt-2 flex items-center gap-4">
+                      <label className="bg-of-light border-2 border-dashed border-primary/30 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-all w-full group">
+                        <PlusSquare className="text-primary group-hover:scale-110 transition-transform mb-2" size={32} />
+                        <span className="text-xs font-black uppercase text-primary tracking-widest">Select from Gallery</span>
+                        <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'newPostMedia')} accept="image/*,video/*" />
+                      </label>
+                      {newPostMedia && (
+                        <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-primary relative flex-shrink-0">
+                           {newPostMedia.startsWith('data:video') ? (
+                             <video src={newPostMedia} className="w-full h-full object-cover" />
+                           ) : (
+                             <img src={newPostMedia} alt="Preview" className="w-full h-full object-cover" />
+                           )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <button className="bg-primary text-white px-10 py-4 rounded-full font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-lg shadow-primary/30">
                     Post to Subscribers
@@ -310,26 +342,32 @@ export default function Dashboard() {
                 </h2>
                 <form onSubmit={handleUpdateCreatorProfile} className="space-y-6">
                   <div>
-                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Profile Image URL</label>
-                    <p className="text-[9px] text-of-gray font-bold mb-2 ml-1 italic">To use from gallery/files: Upload to a host and paste the direct link. Best size: 400x400px.</p>
-                    <input
-                      type="text"
-                      value={creatorProfile.profileImage}
-                      onChange={(e) => setCreatorProfile({ ...creatorProfile, profileImage: e.target.value })}
-                      className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
-                      placeholder="e.g., https://example.com/profile.jpg"
-                    />
+                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Profile Image</label>
+                    <div className="flex items-center gap-4 mt-2">
+                       <div className="w-16 h-16 rounded-full overflow-hidden bg-of-light border-2 border-of-light flex-shrink-0">
+                          {creatorProfile.profileImage ? (
+                            <img src={creatorProfile.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                          ) : <User className="w-full h-full p-3 text-of-gray" />}
+                       </div>
+                       <label className="bg-primary text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] tracking-widest cursor-pointer hover:bg-primary-hover transition shadow-md shadow-primary/20">
+                          Choose Image
+                          <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'profileImage')} accept="image/*" />
+                       </label>
+                    </div>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Cover Image URL</label>
-                    <p className="text-[9px] text-of-gray font-bold mb-2 ml-1 italic">To use from gallery/files: Upload to a host and paste the direct link. Best size: 1200x400px.</p>
-                    <input
-                      type="text"
-                      value={creatorProfile.coverImage}
-                      onChange={(e) => setCreatorProfile({ ...creatorProfile, coverImage: e.target.value })}
-                      className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
-                      placeholder="e.g., https://example.com/cover.jpg"
-                    />
+                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Cover Image</label>
+                    <div className="mt-2 space-y-4">
+                       <div className="w-full h-24 rounded-2xl overflow-hidden bg-of-light border-2 border-of-light">
+                          {creatorProfile.coverImage ? (
+                            <img src={creatorProfile.coverImage} alt="Cover" className="w-full h-full object-cover" />
+                          ) : <PlusSquare className="w-full h-full p-6 text-of-gray opacity-20" />}
+                       </div>
+                       <label className="bg-primary text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] tracking-widest cursor-pointer hover:bg-primary-hover transition shadow-md shadow-primary/20 inline-block">
+                          Choose Cover
+                          <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, 'coverImage')} accept="image/*" />
+                       </label>
+                    </div>
                   </div>
                   <div>
                     <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-2 ml-1">Bio</label>
@@ -583,24 +621,44 @@ export default function Dashboard() {
                        />
                     </div>
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Profile Image URL</label>
-                       <p className="text-[9px] text-of-gray font-bold mb-1 ml-1 italic">To use from gallery/files: Upload to a host and paste link. (400x400px recommended)</p>
-                       <input
-                         type="text"
-                         className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
-                         value={newCreator.profileImage}
-                         onChange={(e) => setNewCreator({ ...newCreator, profileImage: e.target.value })}
-                       />
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Profile Image</label>
+                       <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-full overflow-hidden bg-white border border-of-light flex-shrink-0">
+                             {newCreator.profileImage ? <img src={newCreator.profileImage} className="w-full h-full object-cover" /> : <User className="w-full h-full p-2 text-of-gray" />}
+                          </div>
+                          <label className="bg-of-light text-primary px-3 py-1.5 rounded-lg font-black uppercase text-[9px] tracking-widest cursor-pointer border border-primary/10">
+                             Upload
+                             <input type="file" className="hidden" onChange={async (e) => {
+                               const file = e.target.files?.[0];
+                               if (!file) return;
+                               const formData = new FormData();
+                               formData.append('file', file);
+                               const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                               const data = await res.json();
+                               if (data.url) setNewCreator({ ...newCreator, profileImage: data.url });
+                             }} accept="image/*" />
+                          </label>
+                       </div>
                     </div>
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Cover Image URL</label>
-                       <p className="text-[9px] text-of-gray font-bold mb-1 ml-1 italic">To use from gallery/files: Upload to a host and paste link. (1200x400px recommended)</p>
-                       <input
-                         type="text"
-                         className="w-full p-4 border-2 border-white rounded-2xl focus:border-primary outline-none bg-white font-bold transition-all shadow-sm"
-                         value={newCreator.coverImage}
-                         onChange={(e) => setNewCreator({ ...newCreator, coverImage: e.target.value })}
-                       />
+                       <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Cover Image</label>
+                       <div className="flex items-center gap-4">
+                          <div className="w-20 h-12 rounded-lg overflow-hidden bg-white border border-of-light flex-shrink-0">
+                             {newCreator.coverImage ? <img src={newCreator.coverImage} className="w-full h-full object-cover" /> : <ImageIcon className="w-full h-full p-2 text-of-gray" />}
+                          </div>
+                          <label className="bg-of-light text-primary px-3 py-1.5 rounded-lg font-black uppercase text-[9px] tracking-widest cursor-pointer border border-primary/10">
+                             Upload
+                             <input type="file" className="hidden" onChange={async (e) => {
+                               const file = e.target.files?.[0];
+                               if (!file) return;
+                               const formData = new FormData();
+                               formData.append('file', file);
+                               const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                               const data = await res.json();
+                               if (data.url) setNewCreator({ ...newCreator, coverImage: data.url });
+                             }} accept="image/*" />
+                          </label>
+                       </div>
                     </div>
                     <div className="md:col-span-2 flex gap-4 pt-4">
                       <button type="submit" className="bg-primary text-white px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-primary/30">Activate Account</button>

@@ -11,7 +11,9 @@ import {
   ArrowLeft,
   Image as ImageIcon,
   Star,
-  MessageSquare
+  MessageSquare,
+  MapPin,
+  Link as LinkIcon
 } from 'lucide-react';
 import Image from 'next/image';
 import { formatCompactNumber } from '@/lib/formatters';
@@ -31,6 +33,8 @@ interface Creator {
   username: string;
   profileImage?: string;
   bio?: string;
+  location?: string;
+  website?: string;
   displayFollowerCount?: number;
   subscriptionPrice?: number;
   coverImage?: string;
@@ -230,8 +234,25 @@ export default function CreatorProfile() {
           </div>
         </div>
 
-        <div className="text-of-dark text-base mb-6">
+        <div className="text-of-dark text-base mb-4 whitespace-pre-wrap">
           {creator.bio || '🐒'}
+        </div>
+
+        <div className="flex flex-wrap gap-x-4 gap-y-2 mb-6 text-of-gray text-[13px] font-bold">
+          {creator.location && (
+            <div className="flex items-center gap-1">
+              <MapPin size={16} />
+              <span>{creator.location}</span>
+            </div>
+          )}
+          {creator.website && (
+            <div className="flex items-center gap-1">
+              <LinkIcon size={16} />
+              <a href={creator.website.startsWith('http') ? creator.website : `https://${creator.website}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate max-w-[200px]">
+                {creator.website.replace(/^https?:\/\//, '')}
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Subscription Card */}
@@ -310,11 +331,11 @@ export default function CreatorProfile() {
                 </div>
 
                 {post.mediaUrl && (
-                  <div className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden shadow-inner">
-                    {post.mediaUrl.match(/\.(mp4|webm|ogg)$/i) ? (
+                  <div className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden shadow-inner border border-gray-100">
+                    {post.mediaUrl.startsWith('data:video') || post.mediaUrl.match(/\.(mp4|webm|ogg)$/i) ? (
                       <video src={post.mediaUrl} controls className="w-full h-full object-cover" />
                     ) : (
-                      <Image src={post.mediaUrl} alt="" fill className="object-cover" />
+                      <img src={post.mediaUrl} alt="" className="w-full h-full object-cover" />
                     )}
                   </div>
                 )}

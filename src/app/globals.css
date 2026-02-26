@@ -1,32 +1,38 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #f2f5f7;
   --foreground: #242529;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-
-  --color-primary: #00aff0;
-  --color-primary-hover: #008fca;
-  --color-of-gray: #8a96a3;
-  --color-of-light: #f2f5f7;
-  --color-of-dark: #242529;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom styles for OnlyFans brand */
+@layer utilities {
+  .text-primary {
+    color: #00aff0;
+  }
+  .bg-primary {
+    background-color: #00aff0;
+  }
+  .bg-primary-hover {
+    background-color: #008fca;
+  }
+  .text-of-gray {
+    color: #8a96a3;
+  }
+  .bg-of-light {
+    background-color: #f2f5f7;
+  }
+  .text-of-dark {
+    color: #242529;
+  }
 }

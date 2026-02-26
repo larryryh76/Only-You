@@ -116,8 +116,8 @@ export default function Navigation() {
       <MessageSquare size={28} />
     </Link>
         {session ? (
-      <Link href={session.user.role === 'creator' ? `/${session.user.username}` : '/profile'} className={pathname.startsWith('/profile') || (session.user.role === 'creator' && pathname === `/${session.user.username}`) ? 'text-primary' : 'text-of-gray'}>
-        <div className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center text-[10px] font-bold overflow-hidden border border-gray-100">
+      <Link href="/settings" className={pathname === '/settings' ? 'text-primary' : 'text-of-gray'}>
+        <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold overflow-hidden border ${pathname === '/settings' ? 'border-primary' : 'border-gray-100 bg-gray-200'}`}>
            {session.user.name?.[0] || 'U'}
         </div>
       </Link>
