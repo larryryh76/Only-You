@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
@@ -14,7 +14,8 @@ import {
   PlusSquare,
   Eye,
   MessageSquare,
-  LayoutDashboard
+  LayoutDashboard,
+  LogOut
 } from 'lucide-react';
 import { formatCompactNumber } from '@/lib/formatters';
 
@@ -49,6 +50,7 @@ export default function Dashboard() {
   const [newPostContent, setNewPostContent] = useState('');
   const [newPostMedia, setNewPostMedia] = useState('');
   const [paymentDetails, setPaymentDetails] = useState({ cashapp: '', crypto: '' });
+  const [creatorPrice, setCreatorPrice] = useState(0);
   const [showCreateCreator, setShowCreateCreator] = useState(false);
   const [newCreator, setNewCreator] = useState({
     name: '',
@@ -81,6 +83,7 @@ export default function Dashboard() {
       const meRes = await fetch('/api/creators/me');
       const meData = await meRes.json();
       setPaymentDetails(meData.paymentDetails || { cashapp: '', crypto: '' });
+      setCreatorPrice(meData.subscriptionPrice || 0);
       setCreatorProfile({
         bio: meData.bio || '',
         profileImage: meData.profileImage || '',
@@ -115,7 +118,11 @@ export default function Dashboard() {
     const res = await fetch('/api/creators/me', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...creatorProfile, paymentDetails }),
+      body: JSON.stringify({
+        ...creatorProfile,
+        paymentDetails,
+        subscriptionPrice: creatorPrice
+      }),
     });
     if (res.ok) alert('Profile updated!');
   };
@@ -186,7 +193,16 @@ export default function Dashboard() {
               <LayoutDashboard className="text-white" size={32} />
             </div>
             <div>
-              <h1 className="text-4xl font-black text-of-dark tracking-tight uppercase">{role}</h1>
+              <div className="flex items-center gap-3">
+                <h1 className="text-4xl font-black text-of-dark tracking-tight uppercase">{role}</h1>
+                <button
+                  onClick={() => signOut()}
+                  className="p-2 text-of-gray hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                  title="Sign Out"
+                >
+                  <LogOut size={24} />
+                </button>
+              </div>
               <p className="text-of-gray font-bold text-sm tracking-widest">CONTROL PANEL</p>
             </div>
           </div>
@@ -322,6 +338,17 @@ export default function Dashboard() {
                       onChange={(e) => setCreatorProfile({ ...creatorProfile, bio: e.target.value })}
                       className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm min-h-[80px]"
                       placeholder="Tell your fans about yourself..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-2 ml-1">Subscription Price ($)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={creatorPrice}
+                      onChange={(e) => setCreatorPrice(parseFloat(e.target.value))}
+                      className="w-full border-2 border-of-light rounded-2xl p-4 focus:border-primary outline-none bg-of-light/30 font-bold transition-colors text-sm"
+                      placeholder="0.00"
                     />
                   </div>
                   <div>
