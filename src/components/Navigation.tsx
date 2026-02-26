@@ -8,7 +8,9 @@ import {
   MessageSquare,
   LayoutDashboard,
   User,
-  LogOut
+  LogOut,
+  Bell,
+  PlusSquare
 } from 'lucide-react';
 import Logo from './ui/Logo';
 
@@ -99,20 +101,26 @@ export default function Navigation() {
         )}
       </aside>
 
-      {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-of-light px-6 py-3 flex justify-between items-center z-50">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link key={item.href} href={item.href} className={isActive ? 'text-primary' : 'text-of-gray'}>
-              <item.icon size={28} />
-            </Link>
-          );
-        })}
+  {/* Mobile Bottom Navigation */}
+  <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 px-6 py-3 flex justify-between items-center z-50">
+    <Link href="/" className={pathname === '/' ? 'text-primary' : 'text-of-gray'}>
+      <Home size={28} />
+    </Link>
+    <Link href="/notifications" className={pathname === '/notifications' ? 'text-primary' : 'text-of-gray'}>
+      <Bell size={28} />
+    </Link>
+    <Link href="/dashboard" className={pathname === '/dashboard' ? 'text-primary' : 'text-of-gray'}>
+      <PlusSquare size={28} />
+    </Link>
+    <Link href="/messages" className={pathname === '/messages' ? 'text-primary' : 'text-of-gray'}>
+      <MessageSquare size={28} />
+    </Link>
         {session ? (
-           <button onClick={() => signOut()} className="text-of-gray">
-              <LogOut size={28} />
-           </button>
+      <Link href={session.user.role === 'creator' ? `/${session.user.username}` : '/profile'} className={pathname.startsWith('/profile') || (session.user.role === 'creator' && pathname === `/${session.user.username}`) ? 'text-primary' : 'text-of-gray'}>
+        <div className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center text-[10px] font-bold overflow-hidden border border-gray-100">
+           {session.user.name?.[0] || 'U'}
+        </div>
+      </Link>
         ) : (
           <Link href="/login" className="text-of-gray">
             <User size={28} />

@@ -8,7 +8,6 @@ import {
   Lock,
   X,
   Share2,
-  MoreHorizontal,
   ArrowLeft,
   FileText,
   Star
@@ -134,7 +133,7 @@ export default function CreatorProfile() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header / Nav */}
-      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md flex items-center justify-between px-4 py-3 border-b border-gray-100">
+      <div className="sticky top-0 z-40 bg-white flex items-center justify-between px-4 py-2 border-b border-gray-100">
         <div className="flex items-center gap-6">
           <button onClick={() => router.back()} className="text-of-dark hover:bg-gray-100 p-2 rounded-full transition">
             <ArrowLeft size={24} />
@@ -142,21 +141,21 @@ export default function CreatorProfile() {
           <div>
             <div className="flex items-center gap-1">
               <h2 className="font-bold text-lg leading-tight">{creator.name}</h2>
-              {creator.isVerified && <CheckCircle2 size={18} className="text-primary fill-primary text-white" />}
+              {creator.isVerified && <CheckCircle2 size={18} className="text-of-dark" />}
             </div>
-            <p className="text-of-gray text-xs">{formatCompactNumber(posts.length)} posts</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
            <button
+              className="p-2 hover:bg-gray-100 rounded-full transition"
+           >
+              <Star size={24} className="text-of-dark" />
+           </button>
+           <button
               onClick={handleShare}
               className="p-2 hover:bg-gray-100 rounded-full transition"
-              title="Share Profile"
            >
-              <Share2 size={22} className="text-of-dark" />
-           </button>
-           <button className="p-2 hover:bg-gray-100 rounded-full transition">
-              <MoreHorizontal size={22} className="text-of-dark" />
+              <Share2 size={24} className="text-of-dark" />
            </button>
         </div>
       </div>
@@ -177,9 +176,9 @@ export default function CreatorProfile() {
 
       {/* Profile Info */}
       <div className="px-4 relative">
-        <div className="flex justify-between items-start -mt-16 mb-4">
+        <div className="flex justify-between items-start -mt-16 mb-2">
           <div className="relative">
-            <div className="w-32 h-32 rounded-full border-4 border-white bg-gray-100 overflow-hidden relative shadow-sm">
+            <div className="w-28 h-28 rounded-full border-4 border-white bg-gray-100 overflow-hidden relative">
               {creator.profileImage ? (
                 <Image
                   src={creator.profileImage}
@@ -193,47 +192,44 @@ export default function CreatorProfile() {
                 </div>
               )}
             </div>
-            <div className="absolute bottom-2 right-2 w-5 h-5 bg-green-500 border-4 border-white rounded-full"></div>
+            <div className="absolute bottom-1 right-1 w-6 h-6 bg-green-500 border-4 border-white rounded-full"></div>
           </div>
           <div className="flex gap-3 mt-16">
              <button
-                className="p-2.5 border border-primary/20 rounded-full hover:bg-gray-50 transition group"
+                className="p-2 border border-gray-200 rounded-full hover:bg-gray-50 transition"
               >
-                <Star size={24} className="text-primary group-hover:fill-primary/10" />
+                <Star size={24} className="text-primary" />
              </button>
              <button
                 onClick={handleShare}
-                className="p-2.5 border border-primary/20 rounded-full hover:bg-gray-50 transition group"
-                title="Share Profile"
+                className="p-2 border border-gray-200 rounded-full hover:bg-gray-50 transition"
               >
-                <Share2 size={24} className="text-primary group-hover:fill-primary/10" />
+                <Share2 size={24} className="text-primary" />
              </button>
           </div>
         </div>
 
         <div className="mb-4">
-          <div className="flex items-center gap-1.5">
-            <h1 className="text-xl font-bold text-of-dark">🦋 🌸 {creator.name}</h1>
-            {creator.isVerified && <CheckCircle2 size={20} className="text-of-dark" />}
+          <div className="flex items-center gap-1">
+            <h1 className="text-xl font-bold text-of-dark">{creator.name} {creator.isVerified && <CheckCircle2 size={18} className="inline text-of-dark" />}</h1>
           </div>
           <div className="flex items-center gap-1 text-of-gray text-[15px]">
             <span>@{creator.username}</span>
-            <span>•</span>
+            <span className="text-[8px]">●</span>
             <span>Available now</span>
           </div>
         </div>
 
-        <div className="text-of-dark text-[17px] mb-6">
+        <div className="text-of-dark text-base mb-6">
           {creator.bio || '🐒'}
         </div>
 
         {/* Subscription Card */}
-        <div className="border-y border-gray-100 -mx-4 px-4 py-5 mb-6 bg-white">
-          <p className="text-[13px] font-bold text-of-gray uppercase tracking-tight mb-4">Subscription</p>
+        <div className="border-t border-gray-100 -mx-4 px-4 py-4 bg-white">
+          <p className="text-[13px] font-bold text-of-gray uppercase tracking-tight mb-3">Subscription</p>
 
           <div className="space-y-4">
-             {/* Promotional Offer (Hardcoded for UI match) */}
-             <p className="font-bold text-[17px] text-of-dark">Limited offer - 35% off for 28 days!</p>
+             <p className="font-bold text-lg text-of-dark">Limited offer - 35% off for 28 days!</p>
 
              {subStatus === 'active' ? (
                 <button disabled className="w-full bg-green-500 text-white py-3.5 rounded-full font-bold flex justify-between px-8 items-center text-sm uppercase tracking-wider">
@@ -248,13 +244,13 @@ export default function CreatorProfile() {
              ) : (
                 <button
                   onClick={handleSubscribeClick}
-                  className="w-full bg-primary text-white py-4 rounded-full font-bold flex justify-between px-8 items-center hover:bg-primary-hover transition text-sm uppercase tracking-wider"
+                  className="w-full bg-primary text-white py-3.5 rounded-full font-bold flex justify-between px-8 items-center hover:bg-primary-hover transition text-sm uppercase tracking-wider shadow-sm"
                 >
                    <span>SUBSCRIBE</span>
                    <span>${((creator.subscriptionPrice || 4.99) * 0.65).toFixed(2)} for 28 days</span>
                 </button>
              )}
-             <p className="text-of-gray text-[15px]">Regular price ${(creator.subscriptionPrice || 4.99).toFixed(2)} /month</p>
+             <p className="text-of-gray text-sm">Regular price ${(creator.subscriptionPrice || 4.99).toFixed(2)} /month</p>
           </div>
         </div>
 
@@ -262,13 +258,13 @@ export default function CreatorProfile() {
         <div className="flex border-b border-gray-100 -mx-4">
           <button
             onClick={() => setActiveTab('posts')}
-            className={`flex-1 py-4 text-sm font-bold uppercase tracking-wider ${activeTab === 'posts' ? 'text-primary border-b-2 border-primary' : 'text-of-gray'}`}
+            className={`flex-1 py-4 text-[13px] font-bold uppercase tracking-wider ${activeTab === 'posts' ? 'text-primary border-b-2 border-primary' : 'text-of-gray'}`}
           >
             {formatCompactNumber(posts.length)} Posts
           </button>
           <button
             onClick={() => setActiveTab('media')}
-            className={`flex-1 py-4 text-sm font-bold uppercase tracking-wider ${activeTab === 'media' ? 'text-primary border-b-2 border-primary' : 'text-of-gray'}`}
+            className={`flex-1 py-4 text-[13px] font-bold uppercase tracking-wider ${activeTab === 'media' ? 'text-primary border-b-2 border-primary' : 'text-of-gray'}`}
           >
             Media
           </button>
@@ -278,8 +274,8 @@ export default function CreatorProfile() {
         {subStatus === 'active' || (session && session.user.id === creator._id) || (session && session.user.role === 'admin') ? (
           <div className="py-6 space-y-6">
             {posts.map((post) => (
-              <div key={post._id} className="border-b border-gray-100 pb-6">
-                <div className="flex items-center gap-3 px-4 mb-4">
+              <div key={post._id} className="border-b border-gray-100 pb-6 px-4">
+                <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden relative border border-gray-100">
                     {creator.profileImage ? (
                       <Image src={creator.profileImage} alt="" fill className="object-cover" />
@@ -293,19 +289,17 @@ export default function CreatorProfile() {
                   </div>
                 </div>
 
-                <div className="px-4 mb-4 whitespace-pre-wrap text-of-dark">
+                <div className="mb-4 whitespace-pre-wrap text-of-dark">
                   {post.content}
                 </div>
 
                 {post.mediaUrl && (
-                  <div className="px-4">
-                    <div className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden shadow-inner">
-                      {post.mediaUrl.match(/\.(mp4|webm|ogg)$/i) ? (
-                        <video src={post.mediaUrl} controls className="w-full h-full object-cover" />
-                      ) : (
-                        <Image src={post.mediaUrl} alt="" fill className="object-cover" />
-                      )}
-                    </div>
+                  <div className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden shadow-inner">
+                    {post.mediaUrl.match(/\.(mp4|webm|ogg)$/i) ? (
+                      <video src={post.mediaUrl} controls className="w-full h-full object-cover" />
+                    ) : (
+                      <Image src={post.mediaUrl} alt="" fill className="object-cover" />
+                    )}
                   </div>
                 )}
               </div>
@@ -315,23 +309,23 @@ export default function CreatorProfile() {
             )}
           </div>
         ) : (
-          <div className="py-8 text-center flex flex-col items-center">
-            <div className="text-gray-200 mb-8">
-               <Lock size={120} strokeWidth={1} />
+          <div className="py-12 flex flex-col items-center bg-gray-50/30 -mx-4 px-4">
+            <div className="text-gray-200 mb-10">
+               <Lock size={100} strokeWidth={1} />
             </div>
 
-            <div className="border border-gray-100 rounded-xl p-4 w-full bg-white shadow-sm">
-               <div className="flex justify-between items-center mb-6 px-2">
+            <div className="border border-gray-100 rounded-xl p-4 w-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+               <div className="flex justify-between items-center mb-8 px-2">
                   <div className="flex items-center gap-2 text-of-gray">
-                     <FileText size={20} />
-                     <span className="text-[17px] font-medium">{posts.length}</span>
+                     <FileText size={18} />
+                     <span className="text-sm font-bold">{posts.length}</span>
                   </div>
-                  <Lock size={20} className="text-of-gray" />
+                  <Lock size={18} className="text-of-gray" />
                </div>
 
                <button
                   onClick={handleSubscribeClick}
-                  className="w-full bg-primary text-white py-4 rounded-full font-bold text-[13px] uppercase tracking-wider hover:bg-primary-hover transition"
+                  className="w-full bg-primary text-white py-4 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-primary-hover transition"
                >
                   SUBSCRIBE TO SEE USER&apos;S POSTS
                </button>
