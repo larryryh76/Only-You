@@ -15,6 +15,8 @@ const UserSchema = new mongoose.Schema({
   profileImage: { type: String },
   coverImage: { type: String },
   bio: { type: String },
+  location: { type: String },
+  website: { type: String },
   displayFollowerCount: { type: Number, default: 0 },
   paymentDetails: {
     cashapp: { type: String },

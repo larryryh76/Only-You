@@ -4,13 +4,16 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
-  CheckCircle2,
+  BadgeCheck,
   Lock,
   X,
   Share2,
   ArrowLeft,
-  FileText,
-  Star
+  Image as ImageIcon,
+  Star,
+  MessageSquare,
+  MapPin,
+  Link as LinkIcon
 } from 'lucide-react';
 import Image from 'next/image';
 import { formatCompactNumber } from '@/lib/formatters';
@@ -30,6 +33,8 @@ interface Creator {
   username: string;
   profileImage?: string;
   bio?: string;
+  location?: string;
+  website?: string;
   displayFollowerCount?: number;
   subscriptionPrice?: number;
   coverImage?: string;
@@ -141,11 +146,18 @@ export default function CreatorProfile() {
           <div>
             <div className="flex items-center gap-1">
               <h2 className="font-bold text-lg leading-tight">{creator.name}</h2>
-              {creator.isVerified && <CheckCircle2 size={18} className="text-of-dark" />}
+              {creator.isVerified && <BadgeCheck size={18} className="text-primary fill-primary text-white" />}
             </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
+           <button
+              onClick={() => router.push(`/messages?userId=${creator._id}`)}
+              className="p-2 hover:bg-gray-100 rounded-full transition"
+              title="Message"
+           >
+              <MessageSquare size={24} className="text-of-dark" />
+           </button>
            <button
               className="p-2 hover:bg-gray-100 rounded-full transition"
            >
@@ -211,17 +223,36 @@ export default function CreatorProfile() {
 
         <div className="mb-4">
           <div className="flex items-center gap-1">
-            <h1 className="text-xl font-bold text-of-dark">{creator.name} {creator.isVerified && <CheckCircle2 size={18} className="inline text-of-dark" />}</h1>
+            <h1 className="text-xl font-bold text-of-dark">{creator.name} {creator.isVerified && <BadgeCheck size={18} className="inline text-primary fill-primary text-white" />}</h1>
           </div>
-          <div className="flex items-center gap-1 text-of-gray text-[15px]">
+          <div className="flex items-center gap-2 text-of-gray text-[15px]">
             <span>@{creator.username}</span>
+            <span className="text-[8px]">●</span>
+            <span>{formatCompactNumber(creator.displayFollowerCount || 0)} Fans</span>
             <span className="text-[8px]">●</span>
             <span>Available now</span>
           </div>
         </div>
 
-        <div className="text-of-dark text-base mb-6">
+        <div className="text-of-dark text-base mb-4 whitespace-pre-wrap">
           {creator.bio || '🐒'}
+        </div>
+
+        <div className="flex flex-wrap gap-x-4 gap-y-2 mb-6 text-of-gray text-[13px] font-bold">
+          {creator.location && (
+            <div className="flex items-center gap-1">
+              <MapPin size={16} />
+              <span>{creator.location}</span>
+            </div>
+          )}
+          {creator.website && (
+            <div className="flex items-center gap-1">
+              <LinkIcon size={16} />
+              <a href={creator.website.startsWith('http') ? creator.website : `https://${creator.website}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate max-w-[200px]">
+                {creator.website.replace(/^https?:\/\//, '')}
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Subscription Card */}
@@ -244,10 +275,13 @@ export default function CreatorProfile() {
              ) : (
                 <button
                   onClick={handleSubscribeClick}
-                  className="w-full bg-primary text-white py-3.5 rounded-full font-bold flex justify-between px-8 items-center hover:bg-primary-hover transition text-sm uppercase tracking-wider shadow-sm"
+                  className="w-full bg-primary text-white py-3.5 rounded-full font-bold flex justify-between px-6 items-center hover:bg-primary-hover transition text-sm uppercase tracking-wider shadow-sm"
                 >
-                   <span>SUBSCRIBE</span>
-                   <span>${((creator.subscriptionPrice || 4.99) * 0.65).toFixed(2)} for 28 days</span>
+                   <div className="flex items-center gap-2">
+                      <Star size={18} fill="currentColor" />
+                      <span>SUBSCRIBE FOR ${((creator.subscriptionPrice || 4.99) * 0.65).toFixed(2)}</span>
+                   </div>
+                   <span className="text-[10px] opacity-90">FOR 28 DAYS</span>
                 </button>
              )}
              <p className="text-of-gray text-sm">Regular price ${(creator.subscriptionPrice || 4.99).toFixed(2)} /month</p>
@@ -284,7 +318,10 @@ export default function CreatorProfile() {
                     )}
                   </div>
                   <div>
-                    <p className="font-bold text-sm">{creator.name}</p>
+                    <div className="flex items-center gap-1">
+                      <p className="font-bold text-sm">{creator.name}</p>
+                      {creator.isVerified && <BadgeCheck size={14} className="text-primary fill-primary text-white" />}
+                    </div>
                     <p className="text-of-gray text-xs">{new Date(post.createdAt).toLocaleDateString()}</p>
                   </div>
                 </div>
@@ -294,11 +331,11 @@ export default function CreatorProfile() {
                 </div>
 
                 {post.mediaUrl && (
-                  <div className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden shadow-inner">
-                    {post.mediaUrl.match(/\.(mp4|webm|ogg)$/i) ? (
+                  <div className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden shadow-inner border border-gray-100">
+                    {post.mediaUrl.startsWith('data:video') || post.mediaUrl.match(/\.(mp4|webm|ogg)$/i) ? (
                       <video src={post.mediaUrl} controls className="w-full h-full object-cover" />
                     ) : (
-                      <Image src={post.mediaUrl} alt="" fill className="object-cover" />
+                      <img src={post.mediaUrl} alt="" className="w-full h-full object-cover" />
                     )}
                   </div>
                 )}
@@ -317,7 +354,7 @@ export default function CreatorProfile() {
             <div className="border border-gray-100 rounded-xl p-4 w-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
                <div className="flex justify-between items-center mb-8 px-2">
                   <div className="flex items-center gap-2 text-of-gray">
-                     <FileText size={18} />
+                     <ImageIcon size={18} />
                      <span className="text-sm font-bold">{posts.length}</span>
                   </div>
                   <Lock size={18} className="text-of-gray" />
