@@ -103,7 +103,7 @@ export default function Navigation() {
       </aside>
 
   {/* Mobile Bottom Navigation */}
-  <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 px-8 py-3 flex justify-between items-center z-50">
+  <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 px-6 py-3 flex justify-between items-center z-50 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
     <Link href="/" className={pathname === '/' ? 'text-primary' : 'text-of-gray'}>
       <Home size={26} strokeWidth={isActive('/') ? 2.5 : 2} />
     </Link>
