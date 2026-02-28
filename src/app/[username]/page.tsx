@@ -323,7 +323,7 @@ export default function CreatorProfile() {
         </div>
 
         {/* Content Area */}
-        {subStatus === 'active' || (session && (session.user as any).id === creator._id) || (session && session.user.role === 'admin') ? (
+        {subStatus === 'active' || (session && session.user.id === creator._id) || (session && session.user.role === 'admin') ? (
           <div className="py-6 space-y-8">
             {(activeTab === 'posts' ? posts : posts.filter(p => p.mediaUrl)).map((post) => (
               <div key={post._id} className="pb-8 px-4">
