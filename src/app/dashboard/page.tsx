@@ -18,6 +18,7 @@ import {
   LayoutDashboard,
   LogOut
 } from 'lucide-react';
+import Image from 'next/image';
 import { formatCompactNumber } from '@/lib/formatters';
 
 interface ISubscription {
@@ -283,7 +284,7 @@ export default function Dashboard() {
                            {newPostMedia.startsWith('data:video') ? (
                              <video src={newPostMedia} className="w-full h-full object-cover" />
                            ) : (
-                             <img src={newPostMedia} alt="Preview" className="w-full h-full object-cover" />
+                             <Image src={newPostMedia} alt="Preview" fill className="object-cover" />
                            )}
                         </div>
                       )}
@@ -344,9 +345,9 @@ export default function Dashboard() {
                   <div>
                     <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Profile Image</label>
                     <div className="flex items-center gap-4 mt-2">
-                       <div className="w-16 h-16 rounded-full overflow-hidden bg-of-light border-2 border-of-light flex-shrink-0">
+                       <div className="w-16 h-16 rounded-full overflow-hidden bg-of-light border-2 border-of-light flex-shrink-0 relative">
                           {creatorProfile.profileImage ? (
-                            <img src={creatorProfile.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                            <Image src={creatorProfile.profileImage} alt="Profile" fill className="object-cover" />
                           ) : <User className="w-full h-full p-3 text-of-gray" />}
                        </div>
                        <label className="bg-primary text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] tracking-widest cursor-pointer hover:bg-primary-hover transition shadow-md shadow-primary/20">
@@ -358,9 +359,9 @@ export default function Dashboard() {
                   <div>
                     <label className="block text-[10px] font-black text-of-gray uppercase tracking-widest mb-1 ml-1">Cover Image</label>
                     <div className="mt-2 space-y-4">
-                       <div className="w-full h-24 rounded-2xl overflow-hidden bg-of-light border-2 border-of-light">
+                       <div className="w-full h-24 rounded-2xl overflow-hidden bg-of-light border-2 border-of-light relative">
                           {creatorProfile.coverImage ? (
-                            <img src={creatorProfile.coverImage} alt="Cover" className="w-full h-full object-cover" />
+                            <Image src={creatorProfile.coverImage} alt="Cover" fill className="object-cover" />
                           ) : <PlusSquare className="w-full h-full p-6 text-of-gray opacity-20" />}
                        </div>
                        <label className="bg-primary text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] tracking-widest cursor-pointer hover:bg-primary-hover transition shadow-md shadow-primary/20 inline-block">
@@ -623,8 +624,8 @@ export default function Dashboard() {
                     <div className="space-y-2">
                        <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Profile Image</label>
                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-full overflow-hidden bg-white border border-of-light flex-shrink-0">
-                             {newCreator.profileImage ? <img src={newCreator.profileImage} className="w-full h-full object-cover" /> : <User className="w-full h-full p-2 text-of-gray" />}
+                          <div className="w-12 h-12 rounded-full overflow-hidden bg-white border border-of-light flex-shrink-0 relative">
+                             {newCreator.profileImage ? <Image src={newCreator.profileImage} alt="New creator profile" fill className="object-cover" /> : <User className="w-full h-full p-2 text-of-gray" />}
                           </div>
                           <label className="bg-of-light text-primary px-3 py-1.5 rounded-lg font-black uppercase text-[9px] tracking-widest cursor-pointer border border-primary/10">
                              Upload
@@ -643,8 +644,8 @@ export default function Dashboard() {
                     <div className="space-y-2">
                        <label className="text-[10px] font-black text-of-gray uppercase tracking-widest ml-1">Cover Image</label>
                        <div className="flex items-center gap-4">
-                          <div className="w-20 h-12 rounded-lg overflow-hidden bg-white border border-of-light flex-shrink-0">
-                             {newCreator.coverImage ? <img src={newCreator.coverImage} className="w-full h-full object-cover" /> : <ImageIcon className="w-full h-full p-2 text-of-gray" />}
+                          <div className="w-20 h-12 rounded-lg overflow-hidden bg-white border border-of-light flex-shrink-0 relative">
+                             {newCreator.coverImage ? <Image src={newCreator.coverImage} alt="New creator cover" fill className="object-cover" /> : <ImageIcon className="w-full h-full p-2 text-of-gray" />}
                           </div>
                           <label className="bg-of-light text-primary px-3 py-1.5 rounded-lg font-black uppercase text-[9px] tracking-widest cursor-pointer border border-primary/10">
                              Upload
