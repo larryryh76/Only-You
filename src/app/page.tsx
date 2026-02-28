@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSession, signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
@@ -18,8 +18,18 @@ interface Creator {
 }
 
 export default function Home() {
+  return (
+    <Suspense fallback={<div className="text-center py-20">Loading...</div>}>
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+function HomeContent() {
   const { status } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
   const [creators, setCreators] = useState<Creator[]>([]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -58,7 +68,7 @@ export default function Home() {
       setError(res.error);
       setIsLoading(false);
     } else {
-      router.push('/dashboard');
+      router.push(callbackUrl);
     }
   };
 

@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
   BadgeCheck,
@@ -46,7 +46,16 @@ interface Creator {
 }
 
 export default function CreatorProfile() {
+  return (
+    <Suspense fallback={<div className="text-center py-20 font-medium text-gray-500">Loading profile...</div>}>
+      <ProfileContent />
+    </Suspense>
+  );
+}
+
+function ProfileContent() {
   const { username } = useParams();
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
   const router = useRouter();
   const [creator, setCreator] = useState<Creator | null>(null);
@@ -100,6 +109,12 @@ export default function CreatorProfile() {
     fetchData();
   }, [username, session]);
 
+  useEffect(() => {
+    if (searchParams.get('subscribe') === 'true' && session && !loading && creator) {
+      setShowSubModal(true);
+    }
+  }, [searchParams, session, loading, creator]);
+
   if (loading) return <div className="text-center py-20 font-medium text-gray-500">Loading profile...</div>;
   if (!creator) return <div className="text-center py-20 text-red-500 font-bold text-xl">Creator not found</div>;
 
@@ -129,23 +144,24 @@ export default function CreatorProfile() {
 
   const handleSubscribeClick = () => {
     if (!session) {
-      router.push('/login');
+      const callbackUrl = `/${username}?subscribe=true`;
+      router.push(`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`);
     } else {
       setShowSubModal(true);
     }
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white pb-10">
       {/* Header / Nav */}
-      <div className="sticky top-0 z-40 bg-white flex items-center justify-between px-4 py-2 border-b border-gray-100">
-        <div className="flex items-center gap-6">
-          <button onClick={() => router.back()} className="text-of-dark hover:bg-gray-100 p-2 rounded-full transition">
+      <div className="sticky top-0 z-40 bg-white flex items-center justify-between px-4 py-2 border-b border-gray-100 h-14">
+        <div className="flex items-center gap-4 md:gap-6 min-w-0">
+          <button onClick={() => router.back()} className="text-of-dark hover:bg-gray-100 p-2 rounded-full transition flex-shrink-0">
             <ArrowLeft size={24} />
           </button>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-1">
-              <h2 className="font-bold text-lg leading-tight">{creator.name}</h2>
+              <h2 className="font-bold text-base md:text-lg leading-tight truncate">{creator.name}</h2>
               {creator.isVerified && (
                 <BadgeCheck size={18} className="text-primary fill-white" />
               )}
@@ -190,8 +206,8 @@ export default function CreatorProfile() {
       </div>
 
       {/* Profile Info */}
-      <div className="px-4 relative">
-        <div className="flex justify-between items-start -mt-12 mb-2">
+      <div className="px-4 relative max-w-full overflow-x-hidden">
+        <div className="flex justify-between items-start -mt-12 md:-mt-16 mb-2">
           <div className="relative">
             <div className="w-24 h-24 rounded-full border-4 border-white bg-gray-100 overflow-hidden relative">
               {creator.profileImage ? (
@@ -237,18 +253,18 @@ export default function CreatorProfile() {
             <span>Available now</span>
           </div>
 
-          <div className="flex items-center gap-6 mb-4">
-            <div className="text-center">
-              <div className="font-bold text-of-dark text-[15px]">{formatCompactNumber(posts.length)}</div>
-              <div className="text-[11px] text-of-gray font-bold uppercase tracking-tight">Posts</div>
+        <div className="flex items-center gap-4 md:gap-6 mb-4 overflow-x-auto no-scrollbar">
+          <div className="text-center flex-shrink-0">
+            <div className="font-bold text-of-dark text-[14px] md:text-[15px]">{formatCompactNumber(posts.length)}</div>
+            <div className="text-[10px] md:text-[11px] text-of-gray font-bold uppercase tracking-tight">Posts</div>
             </div>
-            <div className="text-center">
-              <div className="font-bold text-of-dark text-[15px]">{formatCompactNumber((creator.displayFollowerCount || 0) * 4.2)}</div>
-              <div className="text-[11px] text-of-gray font-bold uppercase tracking-tight">Likes</div>
+          <div className="text-center flex-shrink-0">
+            <div className="font-bold text-of-dark text-[14px] md:text-[15px]">{formatCompactNumber((creator.displayFollowerCount || 0) * 4.2)}</div>
+            <div className="text-[10px] md:text-[11px] text-of-gray font-bold uppercase tracking-tight">Likes</div>
             </div>
-            <div className="text-center">
-              <div className="font-bold text-of-dark text-[15px]">{formatCompactNumber(creator.displayFollowerCount || 0)}</div>
-              <div className="text-[11px] text-of-gray font-bold uppercase tracking-tight">Fans</div>
+          <div className="text-center flex-shrink-0">
+            <div className="font-bold text-of-dark text-[14px] md:text-[15px]">{formatCompactNumber(creator.displayFollowerCount || 0)}</div>
+            <div className="text-[10px] md:text-[11px] text-of-gray font-bold uppercase tracking-tight">Fans</div>
             </div>
           </div>
         </div>
@@ -275,7 +291,7 @@ export default function CreatorProfile() {
         </div>
 
         {/* Subscription Card */}
-        <div className="border-y border-gray-100 -mx-4 px-4 py-4 bg-white mb-6">
+        <div className="border-y border-gray-100 -mx-4 px-4 py-4 bg-white mb-6 shadow-sm">
           <p className="text-[13px] font-bold text-of-gray uppercase tracking-tight mb-3">Subscription</p>
 
           <div className="space-y-4">
@@ -284,22 +300,22 @@ export default function CreatorProfile() {
              </div>
 
              {subStatus === 'active' ? (
-                <button disabled className="w-full bg-green-500 text-white py-3.5 rounded-full font-bold flex justify-between px-8 items-center text-xs uppercase tracking-widest">
+                <button disabled className="w-full bg-green-500 text-white py-3 rounded-full md:rounded-full font-bold flex justify-between px-6 md:px-8 items-center text-xs uppercase tracking-widest">
                    <span>SUBSCRIBED</span>
                    <span>ACTIVE</span>
                 </button>
              ) : subStatus === 'pending' ? (
-                <button disabled className="w-full bg-orange-400 text-white py-3.5 rounded-full font-bold flex justify-between px-8 items-center text-xs uppercase tracking-widest">
+                <button disabled className="w-full bg-orange-400 text-white py-3 rounded-full md:rounded-full font-bold flex justify-between px-6 md:px-8 items-center text-xs uppercase tracking-widest">
                    <span>PENDING APPROVAL</span>
                    <span>WAITING</span>
                 </button>
              ) : (
                 <button
                   onClick={handleSubscribeClick}
-                  className="w-full bg-primary text-white py-3.5 rounded-full font-bold flex justify-between px-6 items-center hover:opacity-90 transition text-sm uppercase tracking-tight"
+                  className="w-full bg-primary text-white py-3 rounded-full md:rounded-full font-bold flex justify-between px-5 md:px-6 items-center hover:opacity-90 transition text-xs md:text-sm uppercase tracking-tight"
                 >
-                   <span>SUBSCRIBE</span>
-                   <span>${((creator.subscriptionPrice || 4.99) * 0.65).toFixed(2)} for 28 days</span>
+                   <span className="flex-shrink-0">SUBSCRIBE</span>
+                   <span className="truncate ml-2">${((creator.subscriptionPrice || 4.99) * 0.65).toFixed(2)} for 28 days</span>
                 </button>
              )}
              <p className="text-of-gray text-[13px]">Regular price ${(creator.subscriptionPrice || 4.99).toFixed(2)} /month</p>

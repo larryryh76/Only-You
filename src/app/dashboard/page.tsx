@@ -213,7 +213,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen">
-      <main className="max-w-6xl mx-auto py-10 px-6">
+      <main className="max-w-6xl mx-auto py-6 md:py-10 px-4 md:px-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
           <div className="flex items-center gap-4">
             <div className="bg-primary p-3 rounded-2xl shadow-lg shadow-primary/20">
@@ -259,16 +259,16 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             <div className="lg:col-span-2 space-y-10">
               {/* Create Post */}
-              <section className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-of-light relative overflow-hidden">
+              <section className="bg-white p-5 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-xl border border-of-light relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-2 h-full bg-primary"></div>
-                <h2 className="text-2xl font-black text-of-dark mb-6 flex items-center gap-3 tracking-tight">
+                <h2 className="text-xl md:text-2xl font-black text-of-dark mb-6 flex items-center gap-3 tracking-tight">
                   <PlusSquare className="text-primary" /> Create New Post
                 </h2>
                 <form onSubmit={handleCreatePost}>
                   <textarea
                     value={newPostContent}
                     onChange={(e) => setNewPostContent(e.target.value)}
-                    className="w-full border-2 border-of-light rounded-3xl p-6 min-h-[120px] mb-4 focus:border-primary outline-none bg-of-light/30 font-medium transition-colors"
+                    className="w-full border-2 border-of-light rounded-2xl md:rounded-3xl p-4 md:p-6 min-h-[120px] mb-4 focus:border-primary outline-none bg-of-light/30 font-medium transition-colors"
                     placeholder="Share something exclusive with your fans..."
                   ></textarea>
                   <div className="mb-6">
@@ -297,13 +297,13 @@ export default function Dashboard() {
               </section>
 
               {/* Subscription Approvals */}
-              <section className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-of-light">
-                <h2 className="text-2xl font-black text-of-dark mb-6 flex items-center gap-3 tracking-tight">
+              <section className="bg-white p-5 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-xl border border-of-light">
+                <h2 className="text-xl md:text-2xl font-black text-of-dark mb-6 flex items-center gap-3 tracking-tight">
                   <Clock className="text-orange-400" /> Pending Approvals
                 </h2>
                 <div className="space-y-4">
                   {subscriptions.filter((s) => s.status === 'pending').map((sub) => (
-                    <div key={sub._id} className="flex justify-between items-center p-6 bg-of-light/50 rounded-3xl border border-of-light group hover:bg-white hover:shadow-md transition-all">
+                    <div key={sub._id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-5 md:p-6 bg-of-light/50 rounded-2xl md:rounded-3xl border border-of-light group hover:bg-white hover:shadow-md transition-all gap-4">
                       <div>
                         <p className="font-black text-of-dark text-lg tracking-tight">{sub.userId.name}</p>
                         <div className="flex items-center gap-3 mt-1">
@@ -337,7 +337,7 @@ export default function Dashboard() {
             </div>
 
             <div className="space-y-10">
-              <section className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-of-light">
+              <section className="bg-white p-5 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-xl border border-of-light">
                 <h2 className="text-xl font-black text-of-dark mb-6 flex items-center gap-3 tracking-tight">
                   <User className="text-primary" /> Profile & Payout
                 </h2>
@@ -431,11 +431,11 @@ export default function Dashboard() {
 
         {role === 'user' && (
           <div className="space-y-10">
-            <section className="bg-white p-10 rounded-[3rem] shadow-xl border border-of-light">
-              <h2 className="text-3xl font-black text-of-dark mb-10 flex items-center gap-4 tracking-tight">
+            <section className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] shadow-xl border border-of-light">
+              <h2 className="text-2xl md:text-3xl font-black text-of-dark mb-8 md:mb-10 flex items-center gap-4 tracking-tight">
                 <CreditCard className="text-primary" size={32} /> My Subscriptions
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 {subscriptions.map((sub) => (
                   <div key={sub._id} className="p-8 border-2 border-of-light rounded-[2.5rem] bg-of-light/30 hover:bg-white hover:border-primary hover:shadow-xl transition-all duration-300 group">
                     <div className="flex justify-between items-start mb-6">
@@ -472,12 +472,12 @@ export default function Dashboard() {
 
         {role === 'admin' && (
           <div className="space-y-10">
-            <section className="bg-white p-10 rounded-[3rem] shadow-xl border border-of-light overflow-hidden">
-              <h2 className="text-3xl font-black text-of-dark mb-10 flex items-center gap-4 tracking-tight">
+            <section className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] shadow-xl border border-of-light overflow-hidden">
+              <h2 className="text-2xl md:text-3xl font-black text-of-dark mb-8 md:mb-10 flex items-center gap-4 tracking-tight">
                 <CreditCard className="text-primary" size={32} /> Subscription Ledger
               </h2>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
+              <div className="overflow-x-auto -mx-6 px-6">
+                <table className="w-full text-left min-w-[600px]">
                   <thead>
                     <tr className="border-b-2 border-of-light">
                       <th className="pb-6 font-black text-of-gray uppercase text-[10px] tracking-widest">Subscriber</th>
@@ -525,7 +525,7 @@ export default function Dashboard() {
               </div>
             </section>
 
-             <section className="bg-white p-10 rounded-[3rem] shadow-xl border border-of-light overflow-hidden">
+             <section className="bg-white p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] shadow-xl border border-of-light overflow-hidden">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
                 <div className="flex flex-wrap items-center gap-6">
                   <h2 className="text-3xl font-black text-of-dark tracking-tight flex items-center gap-4">
@@ -668,8 +668,8 @@ export default function Dashboard() {
                   </form>
                 </div>
               )}
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
+              <div className="overflow-x-auto -mx-6 px-6">
+                <table className="w-full text-left min-w-[600px]">
                   <thead>
                     <tr className="border-b-2 border-of-light">
                       <th className="pb-6 font-black text-of-gray uppercase text-[10px] tracking-widest">Talent Name</th>
