@@ -146,7 +146,11 @@ export default function CreatorProfile() {
           <div>
             <div className="flex items-center gap-1">
               <h2 className="font-bold text-lg leading-tight">{creator.name}</h2>
-              {creator.isVerified && <BadgeCheck size={18} className="text-primary fill-primary text-white" />}
+              {creator.isVerified && (
+                <div className="bg-primary rounded-full p-0.5">
+                  <BadgeCheck size={14} className="text-white fill-current" />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -223,18 +227,39 @@ export default function CreatorProfile() {
 
         <div className="mb-4">
           <div className="flex items-center gap-1">
-            <h1 className="text-xl font-bold text-of-dark">{creator.name} {creator.isVerified && <BadgeCheck size={18} className="inline text-primary fill-primary text-white" />}</h1>
+            <h1 className="text-xl font-bold text-of-dark">{creator.name}</h1>
+            {creator.isVerified && (
+              <div className="bg-primary rounded-full p-0.5">
+                <BadgeCheck size={16} className="text-white fill-current" />
+              </div>
+            )}
           </div>
-          <div className="flex items-center gap-2 text-of-gray text-[15px]">
+          <div className="flex items-center gap-2 text-of-gray text-[15px] mb-4">
             <span>@{creator.username}</span>
             <span className="text-[8px]">●</span>
-            <span>{formatCompactNumber(creator.displayFollowerCount || 0)} Fans</span>
-            <span className="text-[8px]">●</span>
-            <span>Available now</span>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span>Available now</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-6 mb-4">
+            <div className="text-center">
+              <div className="font-bold text-of-dark text-[15px]">{formatCompactNumber(posts.length)}</div>
+              <div className="text-[11px] text-of-gray font-bold uppercase tracking-tight">Posts</div>
+            </div>
+            <div className="text-center">
+              <div className="font-bold text-of-dark text-[15px]">{formatCompactNumber((creator.displayFollowerCount || 0) * 4.2)}</div>
+              <div className="text-[11px] text-of-gray font-bold uppercase tracking-tight">Likes</div>
+            </div>
+            <div className="text-center">
+              <div className="font-bold text-of-dark text-[15px]">{formatCompactNumber(creator.displayFollowerCount || 0)}</div>
+              <div className="text-[11px] text-of-gray font-bold uppercase tracking-tight">Fans</div>
+            </div>
           </div>
         </div>
 
-        <div className="text-of-dark text-base mb-4 whitespace-pre-wrap">
+        <div className="text-of-dark text-[15px] mb-4 whitespace-pre-wrap leading-relaxed">
           {creator.bio || '🐒'}
         </div>
 
@@ -256,35 +281,37 @@ export default function CreatorProfile() {
         </div>
 
         {/* Subscription Card */}
-        <div className="border-t border-gray-100 -mx-4 px-4 py-4 bg-white">
-          <p className="text-[13px] font-bold text-of-gray uppercase tracking-tight mb-3">Subscription</p>
+        <div className="border-y border-gray-100 -mx-4 px-4 py-4 bg-white mb-6">
+          <p className="text-[12px] font-bold text-of-gray uppercase tracking-wider mb-3">Subscription</p>
 
           <div className="space-y-4">
-             <p className="font-bold text-lg text-of-dark">Limited offer - 35% off for 28 days!</p>
+             <div className="flex items-center gap-2 text-primary">
+                <p className="font-bold text-[15px]">Limited offer - 35% off for 28 days!</p>
+             </div>
 
              {subStatus === 'active' ? (
-                <button disabled className="w-full bg-green-500 text-white py-3.5 rounded-full font-bold flex justify-between px-8 items-center text-sm uppercase tracking-wider">
+                <button disabled className="w-full bg-green-500 text-white py-3.5 rounded-full font-bold flex justify-between px-8 items-center text-xs uppercase tracking-widest">
                    <span>SUBSCRIBED</span>
                    <span>ACTIVE</span>
                 </button>
              ) : subStatus === 'pending' ? (
-                <button disabled className="w-full bg-orange-400 text-white py-3.5 rounded-full font-bold flex justify-between px-8 items-center text-sm uppercase tracking-wider">
+                <button disabled className="w-full bg-orange-400 text-white py-3.5 rounded-full font-bold flex justify-between px-8 items-center text-xs uppercase tracking-widest">
                    <span>PENDING APPROVAL</span>
                    <span>WAITING</span>
                 </button>
              ) : (
                 <button
                   onClick={handleSubscribeClick}
-                  className="w-full bg-primary text-white py-3.5 rounded-full font-bold flex justify-between px-6 items-center hover:bg-primary-hover transition text-sm uppercase tracking-wider shadow-sm"
+                  className="w-full bg-primary text-white py-3.5 rounded-full font-bold flex justify-between px-6 items-center hover:opacity-90 transition text-xs uppercase tracking-widest shadow-sm"
                 >
                    <div className="flex items-center gap-2">
                       <Star size={18} fill="currentColor" />
                       <span>SUBSCRIBE FOR ${((creator.subscriptionPrice || 4.99) * 0.65).toFixed(2)}</span>
                    </div>
-                   <span className="text-[10px] opacity-90">FOR 28 DAYS</span>
+                   <span className="text-[10px] opacity-80">FOR 28 DAYS</span>
                 </button>
              )}
-             <p className="text-of-gray text-sm">Regular price ${(creator.subscriptionPrice || 4.99).toFixed(2)} /month</p>
+             <p className="text-of-gray text-[13px]">Regular price ${(creator.subscriptionPrice || 4.99).toFixed(2)} / month</p>
           </div>
         </div>
 
@@ -306,11 +333,11 @@ export default function CreatorProfile() {
 
         {/* Content Area */}
         {subStatus === 'active' || (session && session.user.id === creator._id) || (session && session.user.role === 'admin') ? (
-          <div className="py-6 space-y-6">
+          <div className="py-6 space-y-8">
             {posts.map((post) => (
-              <div key={post._id} className="border-b border-gray-100 pb-6 px-4">
+              <div key={post._id} className="pb-8 px-4">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-gray-100 overflow-hidden relative border border-gray-100">
+                  <div className="w-11 h-11 rounded-full bg-gray-100 overflow-hidden relative border border-gray-100">
                     {creator.profileImage ? (
                       <Image src={creator.profileImage} alt="" fill className="object-cover" />
                     ) : (
@@ -318,41 +345,48 @@ export default function CreatorProfile() {
                     )}
                   </div>
                   <div>
-                    <div className="flex items-center gap-1">
-                      <p className="font-bold text-sm">{creator.name}</p>
-                      {creator.isVerified && <BadgeCheck size={14} className="text-primary fill-primary text-white" />}
+                    <div className="flex items-center gap-1.5">
+                      <p className="font-bold text-[15px]">{creator.name}</p>
+                      {creator.isVerified && (
+                        <div className="bg-primary rounded-full p-0.5">
+                          <BadgeCheck size={12} className="text-white fill-current" />
+                        </div>
+                      )}
                     </div>
-                    <p className="text-of-gray text-xs">{new Date(post.createdAt).toLocaleDateString()}</p>
+                    <p className="text-of-gray text-[13px]">{new Date(post.createdAt).toLocaleDateString()}</p>
                   </div>
                 </div>
 
-                <div className="mb-4 whitespace-pre-wrap text-of-dark">
+                <div className="mb-4 whitespace-pre-wrap text-of-dark text-[15px] leading-relaxed">
                   {post.content}
                 </div>
 
                 {post.mediaUrl && (
-                  <div className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden shadow-inner border border-gray-100">
+                  <div className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden border border-gray-100">
                     {post.mediaUrl.startsWith('data:video') || post.mediaUrl.match(/\.(mp4|webm|ogg)$/i) ? (
                       <video src={post.mediaUrl} controls className="w-full h-full object-cover" />
                     ) : (
-                      <img src={post.mediaUrl} alt="" className="w-full h-full object-cover" />
+                      <Image src={post.mediaUrl} alt="" fill className="object-cover" />
                     )}
                   </div>
                 )}
               </div>
             ))}
             {posts.length === 0 && (
-              <div className="text-center py-20 text-of-gray font-bold">No posts yet.</div>
+              <div className="text-center py-32 text-of-gray font-bold flex flex-col items-center gap-4">
+                <ImageIcon size={48} className="opacity-20" />
+                <p>No posts yet.</p>
+              </div>
             )}
           </div>
         ) : (
-          <div className="py-12 flex flex-col items-center bg-gray-50/30 -mx-4 px-4">
-            <div className="text-gray-200 mb-10">
-               <Lock size={100} strokeWidth={1} />
+          <div className="py-20 flex flex-col items-center bg-gray-50/50 -mx-4 px-4 min-h-[400px]">
+            <div className="text-gray-200 mb-12">
+               <Lock size={80} strokeWidth={1.5} />
             </div>
 
-            <div className="border border-gray-100 rounded-xl p-4 w-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-               <div className="flex justify-between items-center mb-8 px-2">
+            <div className="border border-gray-200 rounded-2xl p-5 w-full max-w-sm bg-white shadow-sm">
+               <div className="flex justify-between items-center mb-8 px-1">
                   <div className="flex items-center gap-2 text-of-gray">
                      <ImageIcon size={18} />
                      <span className="text-sm font-bold">{posts.length}</span>
@@ -362,7 +396,7 @@ export default function CreatorProfile() {
 
                <button
                   onClick={handleSubscribeClick}
-                  className="w-full bg-primary text-white py-4 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-primary-hover transition"
+                  className="w-full bg-primary text-white py-4 rounded-full font-bold text-xs uppercase tracking-widest hover:opacity-90 transition shadow-lg shadow-primary/20"
                >
                   SUBSCRIBE TO SEE USER&apos;S POSTS
                </button>
