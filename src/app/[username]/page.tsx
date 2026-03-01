@@ -206,7 +206,7 @@ function ProfileContent() {
       </div>
 
       {/* Profile Info */}
-      <div className="px-4 relative max-w-full overflow-x-hidden z-10">
+      <div className="px-4 relative max-w-full overflow-x-hidden z-[20]">
         <div className="flex justify-between items-start -mt-12 md:-mt-16 mb-2">
           <div className="relative">
             <div className="w-24 h-24 rounded-full border-4 border-white bg-gray-100 overflow-hidden relative">

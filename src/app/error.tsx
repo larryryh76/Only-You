@@ -14,14 +14,14 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-6">
-      <h2 className="text-3xl font-bold text-gray-900 mb-4">Something went wrong!</h2>
-      <p className="text-gray-600 mb-8 text-center max-w-md">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-of-light px-6">
+      <h2 className="text-3xl font-bold text-of-dark mb-4 uppercase tracking-tight">Something went wrong!</h2>
+      <p className="text-of-gray mb-8 text-center max-w-md font-medium">
         We encountered an unexpected error. Please try again or contact support if the problem persists.
       </p>
       <button
         onClick={() => reset()}
-        className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition"
+        className="bg-primary text-white px-10 py-3 rounded-full font-black uppercase text-xs tracking-widest hover:bg-primary-hover transition shadow-lg shadow-primary/20"
       >
         Try again
       </button>

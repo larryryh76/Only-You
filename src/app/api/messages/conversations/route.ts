@@ -5,6 +5,8 @@ import dbConnect from '@/lib/mongodb';
 import Message from '@/models/Message';
 import User from '@/models/User';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
