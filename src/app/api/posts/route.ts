@@ -5,6 +5,8 @@ import dbConnect from '@/lib/mongodb';
 import Post from '@/models/Post';
 import Subscription from '@/models/Subscription';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   const session = await getServerSession(authOptions);
   const { searchParams } = new URL(req.url);
