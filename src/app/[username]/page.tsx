@@ -11,12 +11,10 @@ import {
   ArrowLeft,
   Image as ImageIcon,
   Star,
-  MessageSquare,
   MapPin,
   Link as LinkIcon
 } from 'lucide-react';
 import Image from 'next/image';
-import { formatCompactNumber } from '@/lib/formatters';
 
 interface Post {
   _id: string;
@@ -166,17 +164,10 @@ function ProfileContent() {
                 <BadgeCheck size={18} className="text-primary fill-white" />
               )}
             </div>
-            <p className="text-of-gray text-xs">{posts.length} Posts</p>
+            <p className="text-of-gray text-[13px] font-medium truncate">@{creator.username} • Available now</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-           <button
-              onClick={() => router.push(`/messages?userId=${creator._id}`)}
-              className="p-2 hover:bg-gray-100 rounded-full transition"
-              title="Message"
-           >
-              <MessageSquare size={24} className="text-of-dark" />
-           </button>
            <button
               className="p-2 hover:bg-gray-100 rounded-full transition"
            >
@@ -247,26 +238,12 @@ function ProfileContent() {
               <BadgeCheck size={20} className="text-primary fill-white" />
             )}
           </div>
-          <div className="flex items-center gap-1.5 text-of-gray text-[15px] mb-4 font-medium">
-            <span>@{creator.username}</span>
-            <span className="opacity-50">·</span>
-            <span>Available now</span>
+          <div className="flex items-center gap-1.5 text-of-gray text-[15px] mb-4">
+            <span className="font-medium">@{creator.username}</span>
+            <span className="opacity-50">•</span>
+            <span className="text-[14px]">Available now</span>
           </div>
 
-        <div className="flex items-center gap-4 md:gap-6 mb-4 overflow-x-auto no-scrollbar">
-          <div className="text-center flex-shrink-0">
-            <div className="font-bold text-of-dark text-[14px] md:text-[15px]">{formatCompactNumber(posts.length)}</div>
-            <div className="text-[10px] md:text-[11px] text-of-gray font-bold uppercase tracking-tight">Posts</div>
-            </div>
-          <div className="text-center flex-shrink-0">
-            <div className="font-bold text-of-dark text-[14px] md:text-[15px]">{formatCompactNumber((creator.displayFollowerCount || 0) * 4.2)}</div>
-            <div className="text-[10px] md:text-[11px] text-of-gray font-bold uppercase tracking-tight">Likes</div>
-            </div>
-          <div className="text-center flex-shrink-0">
-            <div className="font-bold text-of-dark text-[14px] md:text-[15px]">{formatCompactNumber(creator.displayFollowerCount || 0)}</div>
-            <div className="text-[10px] md:text-[11px] text-of-gray font-bold uppercase tracking-tight">Fans</div>
-            </div>
-          </div>
         </div>
 
         <div className="text-of-dark text-[15px] mb-4 whitespace-pre-wrap leading-relaxed">
@@ -291,31 +268,31 @@ function ProfileContent() {
         </div>
 
         {/* Subscription Card */}
-        <div className="border-y border-gray-100 -mx-4 px-4 py-4 bg-white mb-6 shadow-sm">
+        <div className="border-t border-gray-100 -mx-4 px-4 py-4 bg-white mb-2">
           <p className="text-[13px] font-bold text-of-gray uppercase tracking-tight mb-3">Subscription</p>
 
           <div className="space-y-4">
              <div>
-                <p className="font-bold text-[15px] text-of-dark">Limited offer - 35% off for 28 days!</p>
+                <p className="font-bold text-[17px] text-of-dark">Limited offer - 35% off for 28 days!</p>
              </div>
 
              {subStatus === 'active' ? (
-                <button disabled className="w-full bg-green-500 text-white py-3 rounded-full md:rounded-full font-bold flex justify-between px-6 md:px-8 items-center text-xs uppercase tracking-widest">
+                <button disabled className="w-full bg-green-500 text-white py-4 rounded-full font-bold flex justify-between px-6 items-center text-xs uppercase tracking-widest">
                    <span>SUBSCRIBED</span>
                    <span>ACTIVE</span>
                 </button>
              ) : subStatus === 'pending' ? (
-                <button disabled className="w-full bg-orange-400 text-white py-3 rounded-full md:rounded-full font-bold flex justify-between px-6 md:px-8 items-center text-xs uppercase tracking-widest">
+                <button disabled className="w-full bg-orange-400 text-white py-4 rounded-full font-bold flex justify-between px-6 items-center text-xs uppercase tracking-widest">
                    <span>PENDING APPROVAL</span>
                    <span>WAITING</span>
                 </button>
              ) : (
                 <button
                   onClick={handleSubscribeClick}
-                  className="w-full bg-primary text-white py-3 rounded-full md:rounded-full font-bold flex justify-between px-5 md:px-6 items-center hover:opacity-90 transition text-xs md:text-sm uppercase tracking-tight"
+                  className="w-full bg-[#00aff0] text-white py-4 rounded-full font-bold flex justify-between px-6 items-center hover:bg-[#008fca] transition text-[14px] uppercase tracking-wide"
                 >
-                   <span className="flex-shrink-0">SUBSCRIBE</span>
-                   <span className="truncate ml-2">${((creator.subscriptionPrice || 4.99) * 0.65).toFixed(2)} for 28 days</span>
+                   <span>SUBSCRIBE</span>
+                   <span className="font-bold">${((creator.subscriptionPrice || 4.99) * 0.65).toFixed(2)} for 28 days</span>
                 </button>
              )}
              <p className="text-of-gray text-[13px]">Regular price ${(creator.subscriptionPrice || 4.99).toFixed(2)} /month</p>
@@ -323,18 +300,18 @@ function ProfileContent() {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-gray-100 -mx-4">
+        <div className="flex border-y border-gray-100 -mx-4">
           <button
             onClick={() => setActiveTab('posts')}
-            className={`flex-1 py-3 text-[13px] font-bold uppercase tracking-tight ${activeTab === 'posts' ? 'text-primary border-b-[3px] border-primary' : 'text-of-gray'}`}
+            className={`flex-1 py-4 text-[14px] font-bold uppercase tracking-tight ${activeTab === 'posts' ? 'text-of-dark border-b-2 border-primary' : 'text-of-gray'}`}
           >
-            {formatCompactNumber(posts.length)} Posts
+            {posts.length} POSTS
           </button>
           <button
             onClick={() => setActiveTab('media')}
-            className={`flex-1 py-3 text-[13px] font-bold uppercase tracking-tight ${activeTab === 'media' ? 'text-primary border-b-[3px] border-primary' : 'text-of-gray'}`}
+            className={`flex-1 py-4 text-[14px] font-bold uppercase tracking-tight ${activeTab === 'media' ? 'text-of-dark border-b-2 border-primary' : 'text-of-gray'}`}
           >
-            Media
+            MEDIA
           </button>
         </div>
 
@@ -401,29 +378,29 @@ function ProfileContent() {
             </div>
 
             <div className="text-gray-200/80 mb-10 z-10 mt-4">
-               <Lock size={120} strokeWidth={1} />
+               <Lock size={110} strokeWidth={1} />
             </div>
 
-            <div className="border border-gray-200/60 rounded-2xl p-5 w-full max-w-[380px] bg-white z-10 shadow-md">
-               <div className="flex justify-between items-center mb-8 px-1">
+            <div className="border border-gray-200/60 rounded-xl p-5 w-full max-w-[420px] bg-white/80 backdrop-blur-sm z-10 shadow-sm">
+               <div className="flex justify-between items-center mb-10 px-1">
                   <div className="flex items-center gap-3 text-of-gray">
-                     <div className="flex items-center gap-1.5 border border-gray-100 rounded-lg px-2.5 py-1 bg-gray-50/50">
-                        <ImageIcon size={16} className="opacity-60 text-of-dark" />
-                        <span className="text-sm font-bold text-of-dark">{posts.length}</span>
+                     <div className="flex items-center gap-2 border border-gray-100 rounded-lg px-3 py-1.5 bg-gray-50/50">
+                        <ImageIcon size={18} className="text-of-gray" />
+                        <span className="text-[15px] font-bold text-of-dark">{posts.length}</span>
                      </div>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center">
-                    <Lock size={16} className="text-of-gray/60" strokeWidth={2.5} />
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center">
+                    <Lock size={18} className="text-of-gray/40" strokeWidth={2.5} />
                   </div>
                </div>
 
                <button
                   onClick={subStatus === 'pending' ? undefined : handleSubscribeClick}
                   disabled={subStatus === 'pending'}
-                  className={`w-full py-4 rounded-full font-bold text-[13px] uppercase tracking-wider transition-all shadow-lg ${
+                  className={`w-full py-4 rounded-full font-bold text-[14px] uppercase tracking-wide transition-all ${
                     subStatus === 'pending'
                       ? 'bg-orange-400 text-white cursor-not-allowed opacity-90'
-                      : 'bg-primary text-white hover:opacity-95 active:scale-[0.98] shadow-primary/20'
+                      : 'bg-[#00aff0] text-white hover:bg-[#008fca] shadow-md'
                   }`}
                >
                   {subStatus === 'pending' ? 'PENDING APPROVAL' : "SUBSCRIBE TO SEE USER'S POSTS"}
