@@ -15,10 +15,10 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   return (
     <div className="flex justify-center min-h-screen">
       {showNavigation && <Navigation />}
-      <main className={`flex-1 ${
+      <main className={`flex-1 w-full ${
         !showNavigation
-          ? 'w-full'
-          : 'max-w-[1200px] md:ml-20 xl:ml-64 pb-20 md:pb-0 border-x border-of-light bg-white shadow-sm'
+          ? ''
+          : 'max-w-full md:max-w-[1200px] md:ml-20 xl:ml-64 pb-20 md:pb-0 border-x border-of-light bg-white shadow-sm'
       } min-h-screen`}>
         {children}
       </main>
