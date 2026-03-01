@@ -414,12 +414,12 @@ export default function Dashboard() {
                 </form>
               </section>
 
-              <section className="bg-primary p-8 rounded-[2.5rem] shadow-xl shadow-primary/20 text-white">
+              <section className="bg-primary p-5 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-xl shadow-primary/20 text-white">
                 <h2 className="text-xl font-black mb-6 flex items-center gap-3 tracking-tight">
                   <Users /> Subscriber Stats
                 </h2>
                 <div className="space-y-4">
-                  <div className="bg-white/10 p-6 rounded-3xl backdrop-blur-sm border border-white/10">
+                  <div className="bg-white/10 p-5 md:p-6 rounded-2xl md:rounded-3xl backdrop-blur-sm border border-white/10">
                     <span className="text-white/70 text-xs font-black uppercase tracking-widest">Total Active</span>
                     <p className="font-black text-5xl mt-1">{formatCompactNumber(subscriptions.filter((s) => s.status === 'active').length)}</p>
                   </div>
@@ -547,7 +547,7 @@ export default function Dashboard() {
               </div>
 
               {showCreateCreator && (
-                <div className="mb-12 p-10 bg-of-light rounded-[2.5rem] border-2 border-primary/20 shadow-inner">
+                <div className="mb-12 p-5 md:p-10 bg-of-light rounded-[2rem] md:rounded-[2.5rem] border-2 border-primary/20 shadow-inner">
                   <h3 className="text-xl font-black text-of-dark mb-8 tracking-tight uppercase">Talent Registration</h3>
                   <form onSubmit={handleCreateCreator} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
@@ -708,8 +708,8 @@ export default function Dashboard() {
 
             {/* Edit Creator Modal */}
             {editingCreator && (
-              <div className="fixed inset-0 bg-of-dark/80 backdrop-blur-md flex items-center justify-center z-[110] p-6">
-                <div className="bg-white rounded-[2.5rem] p-10 max-w-2xl w-full shadow-2xl relative overflow-hidden max-h-[90vh] overflow-y-auto">
+              <div className="fixed inset-0 bg-of-dark/80 backdrop-blur-md flex items-center justify-center z-[110] p-4 md:p-6">
+                <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 max-w-2xl w-full shadow-2xl relative overflow-hidden max-h-[90vh] overflow-y-auto">
                    <button
                     onClick={() => setEditingCreator(null)}
                     className="absolute right-6 top-6 text-of-gray hover:text-of-dark transition"

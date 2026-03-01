@@ -192,7 +192,7 @@ function ProfileContent() {
       </div>
 
       {/* Cover Image */}
-      <div className="relative h-48 md:h-64 bg-gray-200 overflow-hidden">
+      <div className="relative h-48 md:h-64 bg-gray-200 overflow-hidden z-0">
         {creator.coverImage ? (
           <Image
             src={creator.coverImage}
