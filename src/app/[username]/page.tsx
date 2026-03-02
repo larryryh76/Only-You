@@ -152,7 +152,7 @@ function ProfileContent() {
   return (
     <div className="min-h-screen bg-white pb-10">
       {/* Header / Nav */}
-      <div className="sticky top-0 z-40 bg-white flex items-center justify-between px-4 py-2 border-b border-gray-100 h-14">
+      <div className="sticky top-0 z-50 bg-white flex items-center justify-between px-4 py-2 border-b border-gray-100 h-14">
         <div className="flex items-center gap-4 md:gap-6 min-w-0">
           <button onClick={() => router.back()} className="text-of-dark hover:bg-gray-100 p-2 rounded-full transition flex-shrink-0">
             <ArrowLeft size={24} />
@@ -161,7 +161,7 @@ function ProfileContent() {
             <div className="flex items-center gap-1">
               <h2 className="font-bold text-base md:text-lg leading-tight truncate">{creator.name}</h2>
               {creator.isVerified && (
-                <BadgeCheck size={18} className="text-primary fill-white" />
+                <BadgeCheck size={18} className="text-of-dark fill-white" />
               )}
             </div>
             <p className="text-of-gray text-[13px] font-medium truncate">@{creator.username} • Available now</p>
@@ -183,13 +183,14 @@ function ProfileContent() {
       </div>
 
       {/* Cover Image */}
-      <div className="relative h-48 md:h-64 bg-gray-200 overflow-hidden z-0">
+      <div className="relative h-48 md:h-64 bg-gray-200 overflow-hidden">
         {creator.coverImage ? (
           <Image
             src={creator.coverImage}
             alt=""
             fill
             className="object-cover"
+            priority
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-r from-gray-300 to-gray-400"></div>
@@ -197,10 +198,10 @@ function ProfileContent() {
       </div>
 
       {/* Profile Info */}
-      <div className="px-4 relative max-w-full overflow-x-hidden z-[20]">
+      <div className="px-4 relative max-w-full z-10">
         <div className="flex justify-between items-start -mt-12 md:-mt-16 mb-2">
-          <div className="relative">
-            <div className="w-24 h-24 rounded-full border-4 border-white bg-gray-100 overflow-hidden relative">
+          <div className="relative z-20">
+            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-[3px] border-white bg-gray-100 overflow-hidden relative shadow-sm">
               {creator.profileImage ? (
                 <Image
                   src={creator.profileImage}
@@ -209,12 +210,12 @@ function ProfileContent() {
                   className="object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-primary text-white text-3xl font-bold">
+                <div className="w-full h-full flex items-center justify-center bg-[#00aff0] text-white text-3xl font-bold">
                   {creator.name[0]}
                 </div>
               )}
             </div>
-            <div className="absolute bottom-0 right-1.5 w-4.5 h-4.5 bg-[#46ca28] border-[3px] border-white rounded-full z-10"></div>
+            <div className="absolute bottom-0 right-1.5 w-5 h-5 bg-[#46ca28] border-[3px] border-white rounded-full z-30"></div>
           </div>
           <div className="flex gap-2 mt-14">
              <button
@@ -235,7 +236,7 @@ function ProfileContent() {
           <div className="flex items-center gap-1">
             <h1 className="text-xl font-bold text-of-dark">{creator.name}</h1>
             {creator.isVerified && (
-              <BadgeCheck size={20} className="text-primary fill-white" />
+              <BadgeCheck size={20} className="text-of-dark fill-white" />
             )}
           </div>
           <div className="flex items-center gap-1.5 text-of-gray text-[15px] mb-4">
@@ -268,34 +269,36 @@ function ProfileContent() {
         </div>
 
         {/* Subscription Card */}
-        <div className="border-t border-gray-100 -mx-4 px-4 py-4 bg-white mb-2">
-          <p className="text-[13px] font-bold text-of-gray uppercase tracking-tight mb-3">Subscription</p>
+        <div className="mb-6">
+          <div className="border border-gray-100 rounded-2xl p-4 bg-white shadow-sm">
+            <p className="text-[11px] font-bold text-of-gray uppercase tracking-wider mb-3">Subscription</p>
 
-          <div className="space-y-4">
-             <div>
-                <p className="font-bold text-[17px] text-of-dark">Limited offer - 35% off for 28 days!</p>
-             </div>
+            <div className="space-y-4">
+               <div className="bg-gray-50/50 p-3 rounded-xl border border-gray-50">
+                  <p className="text-[14px] text-of-gray">Limited offer - 35% off for 28 days!</p>
+               </div>
 
-             {subStatus === 'active' ? (
-                <button disabled className="w-full bg-green-500 text-white py-4 rounded-full font-bold flex justify-between px-6 items-center text-xs uppercase tracking-widest">
-                   <span>SUBSCRIBED</span>
-                   <span>ACTIVE</span>
-                </button>
-             ) : subStatus === 'pending' ? (
-                <button disabled className="w-full bg-orange-400 text-white py-4 rounded-full font-bold flex justify-between px-6 items-center text-xs uppercase tracking-widest">
-                   <span>PENDING APPROVAL</span>
-                   <span>WAITING</span>
-                </button>
-             ) : (
-                <button
-                  onClick={handleSubscribeClick}
-                  className="w-full bg-[#00aff0] text-white py-4 rounded-full font-bold flex justify-between px-6 items-center hover:bg-[#008fca] transition text-[14px] uppercase tracking-wide"
-                >
-                   <span>SUBSCRIBE</span>
-                   <span className="font-bold">${((creator.subscriptionPrice || 4.99) * 0.65).toFixed(2)} for 28 days</span>
-                </button>
-             )}
-             <p className="text-of-gray text-[13px]">Regular price ${(creator.subscriptionPrice || 4.99).toFixed(2)} /month</p>
+               {subStatus === 'active' ? (
+                  <button disabled className="w-full bg-green-500 text-white py-3.5 rounded-full font-bold flex justify-between px-6 items-center text-[13px] uppercase tracking-wide">
+                     <span>SUBSCRIBED</span>
+                     <span>ACTIVE</span>
+                  </button>
+               ) : subStatus === 'pending' ? (
+                  <button disabled className="w-full bg-orange-400 text-white py-3.5 rounded-full font-bold flex justify-between px-6 items-center text-[13px] uppercase tracking-wide">
+                     <span>PENDING APPROVAL</span>
+                     <span>WAITING</span>
+                  </button>
+               ) : (
+                  <button
+                    onClick={handleSubscribeClick}
+                    className="w-full bg-[#00aff0] text-white py-3.5 rounded-full font-bold flex justify-between px-6 items-center hover:bg-[#008fca] transition text-[13px] uppercase tracking-wide shadow-md shadow-[#00aff0]/20"
+                  >
+                     <span>SUBSCRIBE</span>
+                     <span className="font-bold">${((creator.subscriptionPrice || 4.99) * 0.65).toFixed(2)} for 30 days</span>
+                  </button>
+               )}
+               <p className="text-of-gray text-[12px] px-1">Regular price ${(creator.subscriptionPrice || 4.99).toFixed(2)} /month</p>
+            </div>
           </div>
         </div>
 
@@ -332,7 +335,7 @@ function ProfileContent() {
                     <div className="flex items-center gap-1.5">
                       <p className="font-bold text-[15px]">{creator.name}</p>
                       {creator.isVerified && (
-                        <div className="bg-primary rounded-full p-0.5">
+                        <div className="bg-of-dark rounded-full p-0.5">
                           <BadgeCheck size={12} className="text-white fill-current" />
                         </div>
                       )}

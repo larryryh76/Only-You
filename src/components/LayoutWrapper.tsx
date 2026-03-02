@@ -18,7 +18,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       <main className={`flex-1 w-full ${
         !showNavigation
           ? ''
-          : 'max-w-full md:max-w-[1200px] md:ml-20 xl:ml-64 pb-20 md:pb-0 border-x border-of-light bg-white shadow-sm'
+          : 'max-w-full md:max-w-[700px] md:ml-20 xl:ml-0 xl:mx-auto pb-20 md:pb-0 border-x border-gray-100 bg-white shadow-sm'
       } min-h-screen`}>
         {children}
       </main>
